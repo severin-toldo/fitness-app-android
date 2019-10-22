@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Fitness-app-android</string>
+    <string name="text_view_1">I am a TextView!</string>
+    <string name="button_1">I am a Button</string>
+</resources>
