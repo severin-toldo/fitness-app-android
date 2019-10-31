@@ -1,0 +1,21 @@
+package com.stoldo.fitness_app_android;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+import com.stoldo.fitness_app_android.ui.main.MainFragment;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_activity);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, MainFragment.newInstance())
+                    .commitNow();
+        }
+    }
+}
