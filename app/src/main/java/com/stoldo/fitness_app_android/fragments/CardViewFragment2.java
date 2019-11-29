@@ -49,25 +49,25 @@ public class CardViewFragment2 extends Fragment {
         super.onActivityCreated(savedInstanceState);
         cViewModel = ViewModelProviders.of(this).get(CardViewModel2.class);
 
-        List<CardItemInformation2> frags = new ArrayList<>();
-
-        for (int i = 0; i < 20; i++) {
-            CardItemInformation2 frag = CardItemInformation2.newInstance("Fragment " + i);
-            frags.add(frag);
-        }
-
-        ArrayAdapter<CardItemInformation2> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, frags);
-        CardView cardView = (CardView) getView().findViewById(R.id.cardViewList);
-        //cardView.setAdapter(adapter);
-        cardView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CardItemInformation2 frag = CardItemInformation2.newInstance("New Frag " + position);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.cardViewListContainer, frag, "findThisFragment")
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+//        List<CardItemInformation2> frags = new ArrayList<>();
+//
+//        for (int i = 0; i < 20; i++) {
+//            CardItemInformation2 frag = CardItemInformation2.newInstance("Fragment " + i);
+//            frags.add(frag);
+//        }
+//
+//        ArrayAdapter<CardItemInformation2> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, frags);
+//        CardView cardView = (CardView) getView().findViewById(R.id.cardViewList);
+//        //cardView.setAdapter(adapter);
+//        cardView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                CardItemInformation2 frag = CardItemInformation2.newInstance("New Frag " + position);
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.cardViewListContainer, frag, "findThisFragment")
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
     }
 }

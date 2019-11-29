@@ -1,12 +1,14 @@
 package com.stoldo.fitness_app_android.model;
 
+import java.util.List;
+
 public class Exercise {
     private String title;
     private String description;
     private String note;
     private String position;
     private String level; // weight or niveu, ex. 20kg, Niveau 5
-    private String imagePath;
+    private List<String> imagePaths;
 
 
 
@@ -53,11 +55,11 @@ public class Exercise {
         this.level = level;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public List<String> getImagePath() {
+        return imagePaths;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImagePath(List<String> imagePaths) {
+        this.imagePaths = imagePaths;
     }
 }

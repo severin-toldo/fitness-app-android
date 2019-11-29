@@ -34,7 +34,9 @@ public class CardItemInformation2 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.CardItemInformationFragment, container, false);
+        return null;
+
+//        return inflater.inflate(R.layout.CardItemInformationFragment, container, false);
     }
 
     @Override
@@ -42,12 +44,12 @@ public class CardItemInformation2 extends Fragment {
         super.onActivityCreated(savedInstanceState);
         cItemInfoModel = ViewModelProviders.of(this).get(CardItemInformationModel2.class);
 
-        ConstraintLayout listElementContainer = (ConstraintLayout) getView().findViewById(R.id.list_element_background);
-        listElementContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragmentManager().beginTransaction().hide(instance).commit();
-            }
-        });
+//        ConstraintLayout listElementContainer = (ConstraintLayout) getView().findViewById(R.id.list_element_background);
+//        listElementContainer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getFragmentManager().beginTransaction().hide(instance).commit();
+//            }
+//        });
     }
 }

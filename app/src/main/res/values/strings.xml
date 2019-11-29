@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">fitness-app-android</string>
+    <string name="description">Beschreibung</string>
+    <string name="note">Notizen</string>
+    <string name="position">Positionen</string>
+    <string name="level">Gewicht / Niveau</string>
 </resources>
