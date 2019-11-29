@@ -2,6 +2,6 @@ package com.stoldo.fitness_app_android.fragments;
 
 import androidx.lifecycle.ViewModel;
 
-public class CardViewModel extends ViewModel {
+public class CardListViewModel extends ViewModel {
     // TODO: Implement the ViewModel
 }
