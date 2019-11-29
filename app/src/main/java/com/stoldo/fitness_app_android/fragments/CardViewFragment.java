@@ -1,5 +1,6 @@
 package com.stoldo.fitness_app_android.fragments;
 
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -8,33 +9,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.stoldo.fitness_app_android.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class ElementListFragment extends Fragment {
+public class CardViewFragment extends Fragment {
 
-    private ElementListViewModel mViewModel;
+    private CardViewModel cViewModel;
 
     private String input1;
 
-    public static ElementListFragment newInstance(String input1) {
-        return new ElementListFragment(input1);
+    public static CardViewFragment newInstance(String input1) {
+        return new CardViewFragment(input1);
     }
 
-    public ElementListFragment(String input1) {
+    public CardViewFragment(String input1) {
         this.input1 = input1;
     }
 
@@ -45,30 +41,30 @@ public class ElementListFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.element_list_fragment, container, false);
+        return inflater.inflate(R.layout.CardViewFragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ElementListViewModel.class);
+        cViewModel = ViewModelProviders.of(this).get(CardViewModel.class);
 
-        List<ListElementFragment> frags = new ArrayList<>();
+        List<CardItemInformation> frags = new ArrayList<>();
 
         for (int i = 0; i < 20; i++) {
-            ListElementFragment frag = ListElementFragment.newInstance("Fragment " + i);
+            CardItemInformation frag = CardItemInformation.newInstance("Fragment " + i);
             frags.add(frag);
         }
 
-        ArrayAdapter<ListElementFragment> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, frags);
-        ListView listView = (ListView) getView().findViewById(R.id.element_list_list_view);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ArrayAdapter<CardItemInformation> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, frags);
+        CardView cardView = (CardView) getView().findViewById(R.id.cardViewList);
+        //cardView.setAdapter(adapter);
+        cardView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListElementFragment frag = ListElementFragment.newInstance("New Frag " + position);
+                CardItemInformation frag = CardItemInformation.newInstance("New Frag " + position);
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.element_list_container, frag, "findThisFragment")
+                        .replace(R.id.cardViewListContainer, frag, "findThisFragment")
                         .addToBackStack(null)
                         .commit();
             }

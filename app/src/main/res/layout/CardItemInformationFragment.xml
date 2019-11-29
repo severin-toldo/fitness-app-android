@@ -5,19 +5,22 @@
         android:id="@+id/list_element_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.ListElementFragment">
+        tools:context=".fragments.CardItemInformation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/list_element_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        android:id="@+id/list_element_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <Button
-                android:layout_width="364dp"
-                android:layout_height="110dp"
-                android:text="Im an Element"
-                tools:layout_editor_absoluteX="24dp"
-                tools:layout_editor_absoluteY="25dp" />
+            android:layout_width="364dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="23dp"
+            android:text="Im an Element"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
