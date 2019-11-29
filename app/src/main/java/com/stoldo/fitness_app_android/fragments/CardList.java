@@ -14,24 +14,24 @@ import android.view.ViewGroup;
 
 import com.stoldo.fitness_app_android.R;
 
-public class CardItemInformation extends Fragment {
+public class CardList extends Fragment {
 
-    private CardItemInformationViewModel mViewModel;
+    private CardListViewModel mViewModel;
 
-    public static CardItemInformation newInstance() {
-        return new CardItemInformation();
+    public static CardList newInstance() {
+        return new CardList();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.card_item_information_fragment, container, false);
+        return inflater.inflate(R.layout.card_list_fragment, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(CardItemInformationViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(CardListViewModel.class);
         // TODO: Use the ViewModel
     }
 

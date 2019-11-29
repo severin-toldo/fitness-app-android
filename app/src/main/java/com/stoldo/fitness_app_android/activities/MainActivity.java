@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.stoldo.fitness_app_android.R;
-import com.stoldo.fitness_app_android.fragments.CardViewFragment;
+import com.stoldo.fitness_app_android.fragments.CardViewFragment2;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, CardViewFragment.newInstance("Input text"))
+                    .replace(R.id.container, CardViewFragment2.newInstance("Input text"))
                     .commitNow();
         }
     }
