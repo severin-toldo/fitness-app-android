@@ -8,34 +8,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.stoldo.fitness_app_android.R;
+import com.stoldo.fitness_app_android.model.CustomListViewAdapter;
+import com.stoldo.fitness_app_android.model.ListItem;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class ElementListFragment extends Fragment {
-
+public class ElementListFragment<T extends ListItem> extends Fragment {
+    private List<T> data;
     private ElementListViewModel mViewModel;
 
-    private String input1;
-
-    public static ElementListFragment newInstance(String input1) {
-        return new ElementListFragment(input1);
+    public static <T> ElementListFragment newInstance(List<T> data) {
+        return new ElementListFragment(data);
     }
 
-    public ElementListFragment(String input1) {
-        this.input1 = input1;
+    public ElementListFragment(List<T> data) {
+        this.data = data;
     }
 
     @Override
@@ -45,24 +39,18 @@ public class ElementListFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.element_list_fragment, container, false);
+        return inflater.inflate(R.layout.fragment_element_list, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(ElementListViewModel.class);
-
-        List<ListElementFragment> frags = new ArrayList<>();
-
-        for (int i = 0; i < 20; i++) {
-            ListElementFragment frag = ListElementFragment.newInstance("Fragment " + i);
-            frags.add(frag);
-        }
-
-        ArrayAdapter<ListElementFragment> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, frags);
+        CustomListViewAdapter<T> customListViewAdapter = new CustomListViewAdapter<>(data, getActivity().getApplicationContext());
         ListView listView = (ListView) getView().findViewById(R.id.element_list_list_view);
-        listView.setAdapter(adapter);
+        listView.setAdapter(customListViewAdapter);
+
+        // TODO
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

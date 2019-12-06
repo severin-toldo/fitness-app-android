@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">fitness-app-android</string>
+    <string name="app_name">CustomListView</string>
+    <string name="action_settings">Settings</string>
+    <string name="placeholder_workout_title">${WORKOUT_TITLE}</string>
+    <string name="placeholder_workout_description">${WORKOUT_DESCRIPTION}</string>
+    <string name="placeholder_exercise_seconds">${SECONDS}</string>
+    <string name="placeholder_exercise_title">${EXERCISE_TITLE}</string>
+    <string name="placeholder_exercise_description">${EXERCISE_DESCRIPTION}</string>
 </resources>
