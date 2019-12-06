@@ -5,7 +5,7 @@
         android:id="@+id/element_list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".fragments.ElementListFragment">
+        tools:context=".fragments.ListViewFragment">
 
     <ListView
             android:id="@+id/element_list_list_view"

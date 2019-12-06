@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO
 //        if (savedInstanceState == null) {
 //            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.container, ElementListFragment.newInstance("Input text"))
+//                    .replace(R.id.container, ListViewFragment.newInstance("Input text"))
 //                    .commitNow();
 //        }
     }

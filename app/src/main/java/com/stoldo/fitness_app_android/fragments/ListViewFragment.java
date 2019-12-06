@@ -20,15 +20,15 @@ import com.stoldo.fitness_app_android.model.ListItem;
 
 import java.util.List;
 
-public class ElementListFragment<T extends ListItem> extends Fragment {
+public class ListViewFragment<T extends ListItem> extends Fragment {
     private List<T> data;
-    private ElementListViewModel mViewModel;
+    private ListViewModel mViewModel;
 
-    public static <T> ElementListFragment newInstance(List<T> data) {
-        return new ElementListFragment(data);
+    public static <T> ListViewFragment newInstance(List<T> data) {
+        return new ListViewFragment(data);
     }
 
-    public ElementListFragment(List<T> data) {
+    public ListViewFragment(List<T> data) {
         this.data = data;
     }
 
@@ -39,27 +39,27 @@ public class ElementListFragment<T extends ListItem> extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_element_list, container, false);
+        return inflater.inflate(R.layout.fragment_list_view, container, false);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ElementListViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(ListViewModel.class);
         CustomListViewAdapter<T> customListViewAdapter = new CustomListViewAdapter<>(data, getActivity().getApplicationContext());
         ListView listView = (ListView) getView().findViewById(R.id.element_list_list_view);
         listView.setAdapter(customListViewAdapter);
 
         // TODO
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ListElementFragment frag = ListElementFragment.newInstance("New Frag " + position);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.element_list_container, frag, "findThisFragment")
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                ItemInformationFragment frag = ItemInformationFragment.newInstance("New Frag " + position);
+//                getActivity().getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.element_list_container, frag, "findThisFragment")
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
     }
 }

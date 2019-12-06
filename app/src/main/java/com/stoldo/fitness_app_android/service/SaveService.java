@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+// TODO refactor to DataService (save and load)
 public class SaveService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {

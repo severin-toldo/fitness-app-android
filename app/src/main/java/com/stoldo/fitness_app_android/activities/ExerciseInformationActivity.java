@@ -12,7 +12,7 @@ public class ExerciseInformationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("PLACEHOLDER TITLE"); // TODO set title based on input data
-        setContentView(R.layout.exercise_information_activity);
+        setContentView(R.layout.item_info_template1);
 
         // TODO add images for loop
     }

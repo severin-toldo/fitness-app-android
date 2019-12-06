@@ -36,7 +36,7 @@ public class Workout implements ListItem {
         this.title = title;
     }
 
-    public void gstDescription(String desctription) {
+    public void setDescription(String desctription) {
         this.description = desctription;
     }
 
