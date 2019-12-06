@@ -6,7 +6,7 @@ import com.stoldo.fitness_app_android.R;
 
 import java.util.List;
 
-public class Exercise implements ListItem {
+public class Exercise extends SaveItem implements ListItem {
     private String title;
     private Integer seconds;
     private String description;
@@ -76,11 +76,11 @@ public class Exercise implements ListItem {
         this.level = level;
     }
 
-    public List<String> getImagePath() {
+    public List<String> getImagePaths() {
         return imagePaths;
     }
 
-    public void setImagePath(List<String> imagePaths) {
+    public void setImagePaths(List<String> imagePaths) {
         this.imagePaths = imagePaths;
     }
 }

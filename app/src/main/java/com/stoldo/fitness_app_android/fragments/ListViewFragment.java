@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.stoldo.fitness_app_android.R;
@@ -21,14 +22,16 @@ import java.util.List;
 
 public class ListViewFragment<T extends ListItem> extends Fragment {
     private List<T> data;
+    private AdapterView.OnItemClickListener clickListener;
     private ListViewModel mViewModel;
 
-    public static <T> ListViewFragment newInstance(List<T> data) {
-        return new ListViewFragment(data);
+    public static <T> ListViewFragment newInstance(List<T> data, AdapterView.OnItemClickListener clickListener) {
+        return new ListViewFragment(data, clickListener);
     }
 
-    public ListViewFragment(List<T> data) {
+    public ListViewFragment(List<T> data, AdapterView.OnItemClickListener clickListener) {
         this.data = data;
+        this.clickListener = clickListener;
     }
 
     @Override
@@ -48,17 +51,6 @@ public class ListViewFragment<T extends ListItem> extends Fragment {
         CustomListViewAdapter<T> customListViewAdapter = new CustomListViewAdapter<>(data, getActivity().getApplicationContext());
         ListView listView = (ListView) getView().findViewById(R.id.element_list_list_view);
         listView.setAdapter(customListViewAdapter);
-
-        // TODO
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                ItemInformationFragment frag = ItemInformationFragment.newInstance("New Frag " + position);
-//                getActivity().getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.element_list_container, frag, "findThisFragment")
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-//        });
+        listView.setOnItemClickListener(clickListener);
     }
 }

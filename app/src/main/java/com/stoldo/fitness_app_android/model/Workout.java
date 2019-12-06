@@ -4,9 +4,10 @@ import androidx.annotation.LayoutRes;
 
 import com.stoldo.fitness_app_android.R;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
-public class Workout implements ListItem {
+public class Workout extends SaveItem implements ListItem {
     private String title;
     private String description;
     private List<Exercise> exercises;
