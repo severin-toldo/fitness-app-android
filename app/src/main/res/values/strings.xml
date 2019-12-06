@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">CustomListView</string>
     <string name="action_settings">Settings</string>
+    <string name="level">Gewicht / Niveau</string>
+    <string name="position">Positionen</string>
+    <string name="note">Notizen</string>
+    <string name="description">Beschreibung</string>
+
     <string name="placeholder_workout_title">${WORKOUT_TITLE}</string>
     <string name="placeholder_workout_description">${WORKOUT_DESCRIPTION}</string>
     <string name="placeholder_exercise_seconds">${SECONDS}</string>
