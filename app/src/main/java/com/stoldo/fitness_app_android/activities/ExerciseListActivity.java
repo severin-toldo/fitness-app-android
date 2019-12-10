@@ -13,9 +13,7 @@ import com.stoldo.fitness_app_android.model.Exercise;
 import com.stoldo.fitness_app_android.model.Workout;
 import com.stoldo.fitness_app_android.util.JsonUtil;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -35,7 +33,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ListViewFragment.<Exercise>newInstance(exercises, getExerciseClickListener()))
+                    .replace(R.id.exercise_list_container, ListViewFragment.<Exercise>newInstance(exercises, getExerciseClickListener()))
                     .commitNow();
         }
     }
@@ -68,6 +66,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
                 Log.d("MYDEBUG", "Cliekd on exer");
 
+                // TODO on excersie click open info which includes the play button --> Maybe refctor excerises to have warmup and rest
 
 //     fragment from click listener
 //                ItemInformationFragment frag = ItemInformationFragment.newInstance("New Frag " + position);

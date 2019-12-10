@@ -6,7 +6,7 @@ import com.stoldo.fitness_app_android.R;
 
 import java.util.List;
 
-public class Exercise extends SaveItem implements ListItem {
+public class Exercise extends AbstractSaveItem implements ListItem {
     private String title;
     private Integer seconds;
     private String description;

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -30,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ListViewFragment.<Workout>newInstance(workouts, getWorkoutClickListener()))
+                    .replace(R.id.workout_list_container, ListViewFragment.<Workout>newInstance(workouts, getWorkoutClickListener()))
                     .commitNow();
         }
     }

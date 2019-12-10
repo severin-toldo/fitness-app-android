@@ -4,10 +4,9 @@ import androidx.annotation.LayoutRes;
 
 import com.stoldo.fitness_app_android.R;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
-public class Workout extends SaveItem implements ListItem {
+public class Workout extends AbstractSaveItem implements ListItem {
     private String title;
     private String description;
     private List<Exercise> exercises;

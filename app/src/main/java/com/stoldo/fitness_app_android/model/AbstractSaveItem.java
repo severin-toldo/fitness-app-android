@@ -1,6 +1,6 @@
 package com.stoldo.fitness_app_android.model;
 
-public abstract class SaveItem {
+public abstract class AbstractSaveItem {
    public Integer id;
 
     public Integer getId() {
