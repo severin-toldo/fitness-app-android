@@ -38,6 +38,12 @@ public class ExerciseListActivity extends AppCompatActivity {
 //        }
     }
 
+
+    //    @Override
+//    public @LayoutRes int getItemLayout() {
+//        return R.layout.exercise_item;
+//    }
+
     private List<Exercise> getExercisesByWorkoutId(Integer workoutId) {
         // TODO connect to service
         List<Exercise> workouts = new ArrayList<>();

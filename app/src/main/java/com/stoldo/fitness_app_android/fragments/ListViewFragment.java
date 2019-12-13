@@ -19,16 +19,12 @@ import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.CustomListViewAdapter;
 import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Observable;
-import com.stoldo.fitness_app_android.model.Workout;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.util.CloneUtil;
 import com.stoldo.fitness_app_android.util.OtherUtil;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
