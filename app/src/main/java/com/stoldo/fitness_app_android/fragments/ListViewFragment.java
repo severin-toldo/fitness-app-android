@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import java.util.Map;
 
 public class ListViewFragment<S extends Subscriber, I extends ListItem> extends Fragment implements Subscriber {
     private ListViewData<S, I> listViewData;
-    private ListViewModel mViewModel;
+    private ListViewViewModel mViewModel;
 
     private boolean editMode = false;
     private ListView listView;
@@ -61,7 +60,7 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ListViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(ListViewViewModel.class);
         setUpListView(listViewData.getItems(), listViewData.getDefaultItemClickMethod());
         setUpEditMenu();
     }
