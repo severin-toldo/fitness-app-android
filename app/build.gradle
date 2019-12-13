@@ -35,4 +35,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+//    implementation group: 'io.github.kostaskougios', name: 'cloning', version: '1.10.0'
 }

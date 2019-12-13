@@ -31,11 +31,11 @@ public class ExerciseListActivity extends AppCompatActivity {
         Integer workoutId = getIntent().getIntExtra("WORKOUT_ID", 0);
         exercises = getExercisesByWorkoutId(workoutId);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.exercise_list_container, ListViewFragment.<Exercise>newInstance(exercises, getExerciseClickListener()))
-                    .commitNow();
-        }
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.exercise_list_container, ListViewFragment.<Exercise>newInstance(exercises, getExerciseClickListener()))
+//                    .commitNow();
+//        }
     }
 
     private List<Exercise> getExercisesByWorkoutId(Integer workoutId) {

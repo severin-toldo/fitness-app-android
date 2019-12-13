@@ -14,18 +14,18 @@ import android.view.ViewGroup;
 
 import com.stoldo.fitness_app_android.R;
 
-public class ExerciseInformationFragment extends Fragment {
+public class FormFragment extends Fragment {
 
     private ExerciseInformationViewModel mViewModel;
 
-    public static ExerciseInformationFragment newInstance() {
-        return new ExerciseInformationFragment();
+    public static FormFragment newInstance() {
+        return new FormFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.exercise_information_fragment, container, false);
+        return inflater.inflate(R.layout.fragment_form, container, false);
     }
 
     @Override

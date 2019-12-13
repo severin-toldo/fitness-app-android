@@ -2,7 +2,6 @@ package com.stoldo.fitness_app_android.fragments;
 
 import androidx.lifecycle.ViewModelProviders;
 
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 import com.stoldo.fitness_app_android.R;
-import com.stoldo.fitness_app_android.model.CustomListViewAdapter;
 import com.stoldo.fitness_app_android.model.Observable;
-import com.stoldo.fitness_app_android.model.Subscriber;
+import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
+import com.stoldo.fitness_app_android.util.OtherUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditMenuFragment extends Fragment {
     private EditMenuViewModel mViewModel;
@@ -30,9 +31,6 @@ public class EditMenuFragment extends Fragment {
     private ImageButton confirmButton;
     private ImageButton addButton;
     private ImageButton cancelButton;
-
-
-
 
 
     public static EditMenuFragment newInstance(Subscriber subscriber, boolean hasAddButton) {
@@ -57,45 +55,29 @@ public class EditMenuFragment extends Fragment {
         setUpComponentsFromLayout(getView());
     }
 
-    // TODO add click listeners methods
     private void setUpComponentsFromLayout(View view) {
         editButton = view.findViewById(R.id.edit_button);
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setVisibility(View.GONE, View.VISIBLE, hasAddButton ? View.VISIBLE : View.GONE, View.VISIBLE);
-                notifySubscribers("edit");
-            }
+        editButton.setOnClickListener((View v) ->  {
+            setVisibility(View.GONE, View.VISIBLE, hasAddButton ? View.VISIBLE : View.GONE, View.VISIBLE);
+            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("edit", true));
         });
 
         confirmButton = view.findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                notifySubscribers("confirm");
-            }
+        confirmButton.setOnClickListener((View v) ->  {
+            setDefaultVisibility();
+            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("confirm", false));
         });
 
         addButton = view.findViewById(R.id.add_button);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                notifySubscribers("add");
-            }
+        addButton.setOnClickListener((View v) ->  {
+            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("add", true));
         });
 
         cancelButton = view.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setDefaultVisibility();
-                notifySubscribers("cancel");
-            }
+        cancelButton.setOnClickListener((View v) -> {
+            setDefaultVisibility();
+            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("cancel", false));
         });
-
-
-
-
 
         setDefaultVisibility();
     }
@@ -109,9 +91,5 @@ public class EditMenuFragment extends Fragment {
         confirmButton.setVisibility(confirm);
         addButton.setVisibility(add);
         cancelButton.setVisibility(cancel);
-    }
-
-    private void notifySubscribers(String action) {
-        observable.notifySubscribers(action);
     }
 }

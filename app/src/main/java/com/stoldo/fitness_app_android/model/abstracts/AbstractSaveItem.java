@@ -1,4 +1,4 @@
-package com.stoldo.fitness_app_android.model;
+package com.stoldo.fitness_app_android.model.abstracts;
 
 public abstract class AbstractSaveItem {
    public Integer id;

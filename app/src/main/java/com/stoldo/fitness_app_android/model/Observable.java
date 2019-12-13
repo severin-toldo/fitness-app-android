@@ -1,7 +1,10 @@
 package com.stoldo.fitness_app_android.model;
 
+import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Observable {
     private List<Subscriber> subscribers = new ArrayList<>();
@@ -14,7 +17,7 @@ public class Observable {
         subscribers.remove(subscriber);
     }
 
-    public void notifySubscribers(String action) {
-        subscribers.forEach(subscriber -> subscriber.update(action));
+    public void notifySubscribers(Map<String, Object> data) {
+        subscribers.forEach(subscriber -> subscriber.update(data));
     }
 }

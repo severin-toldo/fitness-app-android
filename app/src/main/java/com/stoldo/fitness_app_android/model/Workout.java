@@ -3,48 +3,22 @@ package com.stoldo.fitness_app_android.model;
 import androidx.annotation.LayoutRes;
 
 import com.stoldo.fitness_app_android.R;
+import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 
 import java.util.List;
 
-public class Workout extends AbstractSaveItem implements ListItem {
+@lombok.Getter
+@lombok.Setter
+@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
+public class Workout implements ListItem {
+    private Integer id;
     private String title;
     private String description;
     private List<Exercise> exercises;
 
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
-    }
-
     @Override
     public String getExtra() {
         return null;
-    }
-
-    @Override
-    public @LayoutRes int getItemLayout() {
-        return R.layout.workout_item;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setDescription(String desctription) {
-        this.description = desctription;
-    }
-
-    public List<Exercise> getExercises() {
-        return exercises;
-    }
-
-    public void setExercises(List<Exercise> exercises) {
-        this.exercises = exercises;
     }
 }
