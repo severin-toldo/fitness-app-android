@@ -20,21 +20,6 @@ public class Workout implements ListItem {
     private String title;
 
     @FormField(type = FormFieldType.TEXTFIELD)
-    private String title3;
-
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String title4;
-
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String title5;
-
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String title6;
-
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String title7;
-
-    @FormField(type = FormFieldType.TEXTFIELD)
     private String description;
 
     private List<Exercise> exercises;
