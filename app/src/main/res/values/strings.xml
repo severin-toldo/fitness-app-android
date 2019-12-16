@@ -15,4 +15,5 @@
     <string name="placeholder_exercise_title">${EXERCISE_TITLE}</string>
     <string name="placeholder_exercise_description">${EXERCISE_DESCRIPTION}</string>
     <string name="title_activity_exercise_list">ExerciseListActivity</string>
+    <string name="title_activity_show_popup">ShowPopup</string>
 </resources>

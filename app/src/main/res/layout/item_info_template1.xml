@@ -7,20 +7,21 @@
         tools:context=".activities.ExerciseInformationActivity">
 
     <EditText
-            android:id="@+id/positionEdit9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="31dp"
-            android:layout_marginTop="343dp"
-            android:layout_marginEnd="167dp"
-            android:layout_marginBottom="343dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="@string/level"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/positionEdit9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="343dp"
+        android:layout_marginBottom="343dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/level"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
             android:id="@+id/textView12"
@@ -69,20 +70,22 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-            android:id="@+id/noteEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="31dp"
-            android:layout_marginTop="187dp"
-            android:layout_marginEnd="167dp"
-            android:layout_marginBottom="499dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="@string/note"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/noteEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="187dp"
+        android:layout_marginEnd="167dp"
+        android:layout_marginBottom="499dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/note"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
             android:layout_width="wrap_content"
@@ -124,18 +127,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-            android:id="@+id/descriptionEdit"
-            android:layout_width="380dp"
-            android:layout_height="45dp"
-            android:layout_marginStart="31dp"
-            android:layout_marginTop="111dp"
-            android:layout_marginBottom="575dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="@string/description"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/descriptionEdit"
+        android:layout_width="380dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="111dp"
+        android:layout_marginBottom="575dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="@string/description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

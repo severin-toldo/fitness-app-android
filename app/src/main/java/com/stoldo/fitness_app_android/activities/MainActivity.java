@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
+import android.widget.PopupWindow;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.FormFragment;
@@ -20,7 +22,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements Subscriber {
     private List<Workout> workouts = new ArrayList<>();
     private JsonUtil<Workout> jsonUtil = new JsonUtil<>();
-
+    private PopupWindow popupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
 
     public void editOnWorkoutClick(Workout clickedWorkout) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.workout_list_container, FormFragment.newInstance()) // TODO workout as fragment param --> can we do a gneric edit
+                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout, this)) // TODO workout as fragment param --> can we do a gneric edit
                 // fragment? would be awsome, rember to block any click stuff from the listview!
                 .commitNow();
     }
