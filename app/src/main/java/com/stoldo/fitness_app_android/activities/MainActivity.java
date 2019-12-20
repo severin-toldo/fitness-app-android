@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
 
     public void editOnWorkoutClick(Workout clickedWorkout) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout, this)) // TODO workout as fragment param --> can we do a gneric edit
+                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout)) // TODO workout as fragment param --> can we do a gneric edit
                 // fragment? would be awsome, rember to block any click stuff from the listview!
                 .commitNow();
     }

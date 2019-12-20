@@ -15,12 +15,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
@@ -35,15 +38,32 @@ import java.util.Map;
 public class FormFragment extends Fragment {
 
     private FormViewModel mViewModel;
+    private Object fieldInformations = null;
     private HashMap<TextView, View> labelWithView = new HashMap<>();
-    private PopupWindow popupWindow = new PopupWindow();
+    private int cancelCount = 0;
 
-    public static FormFragment newInstance(Object fieldinformations, Context context) {
-        return new FormFragment(fieldinformations, context);
+    public static FormFragment newInstance(Object fieldinformations) {
+        return new FormFragment(fieldinformations);
+}
+
+    public FormFragment(Object fieldinformations){
+        this.fieldInformations = fieldinformations;
     }
 
-    public FormFragment(Object fieldinformations, Context context){
-        Field[] fields = fieldinformations.getClass().getDeclaredFields();
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_form, container, false);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mViewModel = ViewModelProviders.of(this).get(FormViewModel.class);
+        // TODO: Use the ViewModel
+
+        Field[] fields = this.fieldInformations.getClass().getDeclaredFields();
+        Context context = getActivity();
         for (Field field : fields) {
             FormField formfield = field.getAnnotation(FormField.class);
             if(formfield != null){
@@ -71,25 +91,12 @@ public class FormFragment extends Fragment {
                 }
             }
         }
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_form, container, false);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(FormViewModel.class);
-        // TODO: Use the ViewModel
 
         LinearLayout linearLayout = getView().findViewById(R.id.genericLayout);
 
-        LinearLayout.LayoutParams labelParams = getLabelParams();
+        LayoutParams labelParams = getLabelParams();
 
-        LinearLayout.LayoutParams viewParams = getViewParams();
+        LayoutParams viewParams = getViewParams();
 
         for (Map.Entry<TextView, View> labelAndView : labelWithView.entrySet()){
             TextView label = labelAndView.getKey();
@@ -98,11 +105,36 @@ public class FormFragment extends Fragment {
             linearLayout.addView(view, viewParams);
         }
 
+        linearLayout.addView(createSubmitAndCancelButton());
+
         linearLayout.bringToFront();
+        ConstraintLayout ll = getView().findViewById(R.id.constraintLayout);
+        ll.setOnClickListener(this::onClickOutSide);
     }
 
-    private LinearLayout.LayoutParams getLabelParams(){
-        LinearLayout.LayoutParams labelParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+    private LinearLayout createSubmitAndCancelButton(){
+        LinearLayout horizontalLinearlayout = new LinearLayout(getActivity());
+        horizontalLinearlayout.setOrientation(LinearLayout.HORIZONTAL);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        horizontalLinearlayout.setLayoutParams(layoutParams);
+
+        Button buttonApply = new Button(getActivity());
+        buttonApply.setText("Apply");
+        buttonApply.setOnClickListener(this::onSubmit);
+        Button buttonCancel = new Button(getActivity());
+        buttonCancel.setOnClickListener(this::onClickCancel);
+        buttonCancel.setText("Cancel");
+
+        LayoutParams layoutParams1 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        layoutParams1.weight = 1;
+        horizontalLinearlayout.addView(buttonCancel, layoutParams1);
+        horizontalLinearlayout.addView(buttonApply, layoutParams1);
+
+        return horizontalLinearlayout;
+    }
+
+    private LayoutParams getLabelParams(){
+        LayoutParams labelParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         int marginStart = OtherUtil.convertDpToPixel(10, getActivity());
         int marginEnd = marginStart;
         int marginTop = OtherUtil.convertDpToPixel(15, getActivity());
@@ -113,8 +145,8 @@ public class FormFragment extends Fragment {
         return labelParams;
     }
 
-    private LinearLayout.LayoutParams getViewParams(){
-        LinearLayout.LayoutParams viewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
+    private LayoutParams getViewParams(){
+        LayoutParams viewParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         int marginStart = OtherUtil.convertDpToPixel(10, getActivity());
         int marginEnd = marginStart;
         int marginBottom = OtherUtil.convertDpToPixel(25, getActivity());
@@ -123,5 +155,38 @@ public class FormFragment extends Fragment {
         viewParams.bottomMargin = marginBottom;
 
         return viewParams;
+    }
+
+    public void closeFragment(){
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    public void onSubmit(View v) {
+
+    }
+
+    public void onClickCancel(View v){
+        closeFragment();
+    }
+
+    public void onClickOutSide(View v) {
+        cancelCount++;
+        switch (cancelCount){
+            case 1:
+                Toast.makeText(getActivity(), "Wenn Sie raus wollen nochmals klicken!", Toast.LENGTH_LONG).show();
+                break;
+            case 2:
+                Toast.makeText(getActivity(), "Bitte nochmals klicken!", Toast.LENGTH_LONG).show();
+                break;
+            case 3:
+                Toast.makeText(getActivity(), "Nur noch ein mal!", Toast.LENGTH_LONG).show();
+                break;
+            case 4:
+                Toast.makeText(getActivity(), "Scherz ab jetzt noch einmal", Toast.LENGTH_LONG).show();
+                break;
+            case 5:
+                closeFragment();
+                break;
+        }
     }
 }
