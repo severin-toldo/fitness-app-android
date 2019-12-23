@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.stoldo.fitness_app_android.R;
+import com.stoldo.fitness_app_android.model.Tuple;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
 import com.stoldo.fitness_app_android.util.OtherUtil;
@@ -39,7 +41,7 @@ public class FormFragment extends Fragment {
 
     private FormViewModel mViewModel;
     private Object fieldInformations = null;
-    private HashMap<TextView, View> labelWithView = new HashMap<>();
+    private HashMap<String, Tuple<TextView, View>> labelWithView = new HashMap<>();
     private int cancelCount = 0;
 
     public static FormFragment newInstance(Object fieldinformations) {
@@ -62,9 +64,8 @@ public class FormFragment extends Fragment {
         mViewModel = ViewModelProviders.of(this).get(FormViewModel.class);
         // TODO: Use the ViewModel
 
-        Field[] fields = this.fieldInformations.getClass().getDeclaredFields();
         Context context = getActivity();
-        for (Field field : fields) {
+        for (Field field : this.getAnotatedFields()){
             FormField formfield = field.getAnnotation(FormField.class);
             if(formfield != null){
                 FormFieldType fieldType = formfield.type();
@@ -87,7 +88,7 @@ public class FormFragment extends Fragment {
                         case IMAGE:
                             break;
                     }
-                    labelWithView.put(label, view);
+                    labelWithView.put(field.getName(), new Tuple<>(label, view));
                 }
             }
         }
@@ -98,9 +99,10 @@ public class FormFragment extends Fragment {
 
         LayoutParams viewParams = getViewParams();
 
-        for (Map.Entry<TextView, View> labelAndView : labelWithView.entrySet()){
-            TextView label = labelAndView.getKey();
-            View view = labelAndView.getValue();
+        for (Map.Entry<String, Tuple<TextView, View>> labelAndView : labelWithView.entrySet()){
+            Tuple<TextView, View> keyValue = labelAndView.getValue();
+            TextView label = keyValue.getKey();
+            View view = keyValue.getValue();
             linearLayout.addView(label, labelParams);
             linearLayout.addView(view, viewParams);
         }
@@ -161,8 +163,30 @@ public class FormFragment extends Fragment {
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
-    public void onSubmit(View v) {
+    private Field[] getAnotatedFields(){
+        ArrayList<Field> annotatedFields = new ArrayList<>();
 
+        Field[] fields = this.fieldInformations.getClass().getDeclaredFields();
+        Context context = getActivity();
+        for (Field field : fields) {
+            FormField formfield = field.getAnnotation(FormField.class);
+            if(formfield != null){
+                annotatedFields.add(field);
+            }
+        }
+
+        Field[] arrayField = new Field[annotatedFields.size()];
+        annotatedFields.toArray(arrayField);
+        return arrayField;
+    }
+
+    public void onSubmit(View v) {
+        for (Field field : this.getAnotatedFields()) {
+            String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
+            OtherUtil.runGetter(field, this.fieldInformations, text);
+        }
+
+        closeFragment();
     }
 
     public void onClickCancel(View v){
