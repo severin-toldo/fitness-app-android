@@ -1,6 +1,5 @@
 package com.stoldo.fitness_app_android.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -20,7 +19,7 @@ import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.util.OtherUtil;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import java.util.Map;
 
 public class ListViewFragment<S extends Subscriber, I extends ListItem> extends Fragment implements Subscriber {
     private ListViewData<S, I> listViewData;
-    private ListViewViewModel mViewModel;
 
     private boolean editMode = false;
     private ListView listView;
@@ -60,7 +58,6 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(ListViewViewModel.class);
         setUpListView(listViewData.getItems(), listViewData.getDefaultItemClickMethod());
         setUpEditMenu();
     }
