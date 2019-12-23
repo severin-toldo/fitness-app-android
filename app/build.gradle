@@ -37,5 +37,5 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
     compileOnly 'org.projectlombok:lombok:1.18.10'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
-//    implementation group: 'io.github.kostaskougios', name: 'cloning', version: '1.10.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 }

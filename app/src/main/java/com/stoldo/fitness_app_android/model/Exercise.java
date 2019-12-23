@@ -1,8 +1,5 @@
 package com.stoldo.fitness_app_android.model;
 
-import androidx.annotation.LayoutRes;
-
-import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
@@ -14,8 +11,10 @@ import java.util.List;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 public class Exercise implements ListItem {
-    // TODO prepare + break item
     private Integer id;
+
+    @FormField(type = FormFieldType.NUMBERFIELD)
+    private Integer prepareSeconds;
 
     @FormField(type = FormFieldType.TEXTFIELD)
     private String title;
@@ -34,6 +33,9 @@ public class Exercise implements ListItem {
 
     @FormField(type = FormFieldType.TEXTFIELD)
     private String level; // weight or niveu, ex. 20kg, Niveau 5
+
+    @FormField(type = FormFieldType.NUMBERFIELD)
+    private Integer breakSeconds;
 
     @FormField(type = FormFieldType.IMAGE)
     private List<String> imagePaths; // TODO make sure to support also gif format

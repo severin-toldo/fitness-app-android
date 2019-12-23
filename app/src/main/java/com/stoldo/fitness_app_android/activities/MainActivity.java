@@ -4,16 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Window;
-import android.widget.PopupWindow;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Workout;
+import com.stoldo.fitness_app_android.service.SingletonService;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.util.JsonUtil;
+import com.stoldo.fitness_app_android.service.WorkoutService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +20,29 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements Subscriber {
     private List<Workout> workouts = new ArrayList<>();
-    private JsonUtil<Workout> jsonUtil = new JsonUtil<>();
-    private PopupWindow popupWindow;
+    private WorkoutService workoutService = null;
 
+    // TODO proper error handling
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle(R.string.activity_workouts);
-        workouts = getWorkouts();
 
+        try {
+            // setup singletons once
+            SingletonService singletonService = SingletonService.getInstance(this);
+            singletonService.instantiateSingletons();
+
+            workoutService = (WorkoutService) singletonService.getSingletonByClass(WorkoutService.class);
+            workouts = workoutService.getWorkouts();
+            setUpWorkoutListView(savedInstanceState);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setUpWorkoutListView(Bundle savedInstanceState) {
         ListViewData<MainActivity, Workout> listViewData = new ListViewData<>();
         listViewData.setItems(workouts);
         listViewData.setItemLayout(R.layout.workout_item);
@@ -48,26 +60,13 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
                     .add(R.id.workout_list_container, ListViewFragment.newInstance(listViewData))
                     .commitNow();
         }
+
     }
 
+    // TODO what is this used for? -> probably for FromFragment?
     @Override
     public void update(Map<String, Object> data) {
 //        Log.d("MYDEBUG", "hello " + data.get("action") + ", " + data.get("editMode"));
-    }
-
-    private List<Workout> getWorkouts() {
-        // TODO connect to service
-        List<Workout> workouts = new ArrayList<>();
-
-        for (int i = 0; i < 3; i++) {
-            Workout w = new Workout();
-
-            w.setTitle("Workout Title " + i);
-            w.setDescription("WK Description " + i);
-            workouts.add(w);
-        }
-
-        return workouts;
     }
 
     public void defaultOnWorkoutClick(Workout clickedWorkout) {
@@ -76,14 +75,14 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
             intent.putExtra("WORKOUT_ID", clickedWorkout.getId());
             startActivity(intent);
         } catch (Exception e) {
+            // TODO notify parent or fragment
             e.printStackTrace();
         }
     }
 
     public void editOnWorkoutClick(Workout clickedWorkout) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout, this)) // TODO workout as fragment param --> can we do a gneric edit
-                // fragment? would be awsome, rember to block any click stuff from the listview!
+                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout, this,this))
                 .commitNow();
     }
 }
