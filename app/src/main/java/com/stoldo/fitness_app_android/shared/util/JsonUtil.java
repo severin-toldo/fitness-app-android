@@ -1,4 +1,4 @@
-package com.stoldo.fitness_app_android.util;
+package com.stoldo.fitness_app_android.shared.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

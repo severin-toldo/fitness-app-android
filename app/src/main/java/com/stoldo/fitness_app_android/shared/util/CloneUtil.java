@@ -1,4 +1,4 @@
-package com.stoldo.fitness_app_android.util;
+package com.stoldo.fitness_app_android.shared.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

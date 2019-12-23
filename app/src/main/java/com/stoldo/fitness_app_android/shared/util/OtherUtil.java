@@ -1,4 +1,4 @@
-package com.stoldo.fitness_app_android.util;
+package com.stoldo.fitness_app_android.shared.util;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,9 +8,12 @@ import android.util.TypedValue;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import com.stoldo.fitness_app_android.service.SingletonService;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.UUID;
 
 public class OtherUtil {
     public static Map<String, Object> getEditMenuEventMap(String actionValue, Boolean editModeValue) {
@@ -58,5 +61,18 @@ public class OtherUtil {
 
 
         return null;
+    }
+
+    public static boolean isValidIndex(int index, int listSize) {
+        return index >= 0 && index < listSize;
+    }
+
+    // TODO impment in savable
+    public static String generateUUID() {
+        return UUID.randomUUID().toString();
+    }
+
+    public static Object getService(Class serviceClass) {
+        return SingletonService.getInstance(null).getSingletonByClass(serviceClass);
     }
 }

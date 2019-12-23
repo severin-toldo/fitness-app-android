@@ -1,7 +1,5 @@
 package com.stoldo.fitness_app_android.fragments;
 
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,13 +14,9 @@ import android.widget.ImageButton;
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.util.OtherUtil;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 public class EditMenuFragment extends Fragment {
-    private EditMenuViewModel mViewModel;
     private Observable observable = new Observable();
     private boolean hasAddButton;
 
@@ -51,7 +45,6 @@ public class EditMenuFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(EditMenuViewModel.class);
         setUpComponentsFromLayout(getView());
     }
 
