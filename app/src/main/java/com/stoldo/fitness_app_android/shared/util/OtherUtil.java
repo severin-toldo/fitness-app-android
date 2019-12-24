@@ -5,14 +5,13 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.util.TypedValue;
 
+import com.stoldo.fitness_app_android.service.SingletonService;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import com.stoldo.fitness_app_android.service.SingletonService;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.UUID;
 
 public class OtherUtil {
@@ -32,33 +31,38 @@ public class OtherUtil {
         );
     }
 
-    public static Object runGetter(Field field, Object o, Object value)
-    {
+    public static void runSetter(Field field, Object o, Object value) {
         // MZ: Find the correct method
-        for (Method method : o.getClass().getMethods())
-        {
-            if ((method.getName().startsWith("set")) && (method.getName().length() == (field.getName().length() + 3)))
-            {
-                if (method.getName().toLowerCase().endsWith(field.getName().toLowerCase()))
-                {
+        for (Method method : o.getClass().getMethods()) {
+            if ((method.getName().startsWith("set")) && (method.getName().length() == (field.getName().length() + 3))) {
+                if (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) {
                     // MZ: Method found, run it
-                    try
-                    {
-                        return method.invoke(o, value);
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        Log.e("OtherUtil","Could not determine method: " + method.getName());
-                    }
-                    catch (InvocationTargetException e)
-                    {
+                    try {
+                        method.invoke(o, value);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
                         Log.e("OtherUtil", "Could not determine method: " + method.getName());
                     }
 
                 }
             }
         }
+    }
 
+    public static Object runGetter(Field field, Object o) {
+        // MZ: Find the correct method
+        for (Method method : o.getClass().getMethods()) {
+            if ((method.getName().startsWith("get")) && (method.getName().length() == (field.getName().length() + 3))) {
+                if (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) {
+                    // MZ: Method found, run it
+                    try {
+                        return method.invoke(o);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        Log.e("OtherUtil", "Could not determine method: " + method.getName());
+                    }
+
+                }
+            }
+        }
 
         return null;
     }

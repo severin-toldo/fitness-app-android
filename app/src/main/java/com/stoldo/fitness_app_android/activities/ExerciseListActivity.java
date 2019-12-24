@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.Exercise;
 import com.stoldo.fitness_app_android.service.ExerciseService;
-import com.stoldo.fitness_app_android.shared.IntentParams;
+import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.util.ArrayList;

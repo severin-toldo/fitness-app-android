@@ -2,16 +2,15 @@ package com.stoldo.fitness_app_android.fragments;
 
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.CustomListViewAdapter;
@@ -90,10 +89,7 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
     }
 
     private void setUpListView(List<I> data, Method clickMethod) {
-        CustomListViewAdapter<I> customListViewAdapter = new CustomListViewAdapter<>(data, listViewData.getItemLayout(), getActivity().getApplicationContext());
-        listView = getView().findViewById(R.id.element_list_list_view);
-        // TODO display or hide badges here (accoridng to editMode) --> Badeges are item layout jurisiticton! --> well only view but not display / hide
-        listView.setAdapter(customListViewAdapter);
+        updateItems(data);
 
         if (clickMethod != null) {
             listView.setOnItemClickListener((AdapterView<?> parent, View view, int position, long id) -> {
@@ -104,6 +100,13 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
                 }
             });
         }
+    }
+
+    public void updateItems(List<I> data){
+        CustomListViewAdapter<I> customListViewAdapter = new CustomListViewAdapter<>(data, listViewData.getItemLayout(), getActivity().getApplicationContext());
+        listView = getView().findViewById(R.id.element_list_list_view);
+        // TODO display or hide badges here (accoridng to editMode) --> Badeges are item layout jurisiticton! --> well only view but not display / hide
+        listView.setAdapter(customListViewAdapter);
     }
 
     // TODO onRemove and add remove badges

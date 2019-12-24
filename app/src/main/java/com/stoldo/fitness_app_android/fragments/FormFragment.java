@@ -1,48 +1,49 @@
 package com.stoldo.fitness_app_android.fragments;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.PopupWindow;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.Tuple;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
-import com.stoldo.fitness_app_android.util.OtherUtil;
+import com.stoldo.fitness_app_android.model.interfaces.Submitable;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
+
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FormFragment extends Fragment {
+import lombok.Setter;
 
-    private FormViewModel mViewModel;
+public class FormFragment extends Fragment implements Submitable {
+
+    //private FormViewModel mViewModel;
     private Object fieldInformations = null;
     private HashMap<String, Tuple<TextView, View>> labelWithView = new HashMap<>();
     private int cancelCount = 0;
+
+    @Setter
+    private Submitable submitable = null;
 
     public static FormFragment newInstance(Object fieldinformations) {
         return new FormFragment(fieldinformations);
@@ -61,9 +62,31 @@ public class FormFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(FormViewModel.class);
+        //mViewModel = ViewModelProviders.of(this).get(FormViewModel.class);
         // TODO: Use the ViewModel
 
+        this.CreateViews();
+
+        LinearLayout linearLayout = getView().findViewById(R.id.genericLayout);
+        LayoutParams labelParams = getLabelParams();
+        LayoutParams viewParams = getViewParams();
+
+        for (Map.Entry<String, Tuple<TextView, View>> nameView : labelWithView.entrySet()){
+            Tuple<TextView, View> labelAndView = nameView.getValue();
+            TextView label = labelAndView.getKey();
+            View view = labelAndView.getValue();
+            linearLayout.addView(label, labelParams);
+            linearLayout.addView(view, viewParams);
+        }
+
+        linearLayout.addView(createSubmitAndCancelButton());
+
+        linearLayout.bringToFront();
+        ConstraintLayout ll = getView().findViewById(R.id.constraintLayout);
+        ll.setOnClickListener(this::onClickOutSide);
+    }
+
+    private void CreateViews() {
         Context context = getActivity();
         for (Field field : this.getAnotatedFields()){
             FormField formfield = field.getAnnotation(FormField.class);
@@ -73,7 +96,7 @@ public class FormFragment extends Fragment {
                     TextView label = new TextView(context);
                     label.setText(field.getName());
                     label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-                    View view = null;
+                    EditText view = null;
                     switch (fieldType){
                         case TEXTFIELD:
                             view = new EditText(context);
@@ -88,30 +111,11 @@ public class FormFragment extends Fragment {
                         case IMAGE:
                             break;
                     }
+                    view.setText((String)OtherUtil.runGetter(field, this.fieldInformations));
                     labelWithView.put(field.getName(), new Tuple<>(label, view));
                 }
             }
         }
-
-        LinearLayout linearLayout = getView().findViewById(R.id.genericLayout);
-
-        LayoutParams labelParams = getLabelParams();
-
-        LayoutParams viewParams = getViewParams();
-
-        for (Map.Entry<String, Tuple<TextView, View>> labelAndView : labelWithView.entrySet()){
-            Tuple<TextView, View> keyValue = labelAndView.getValue();
-            TextView label = keyValue.getKey();
-            View view = keyValue.getValue();
-            linearLayout.addView(label, labelParams);
-            linearLayout.addView(view, viewParams);
-        }
-
-        linearLayout.addView(createSubmitAndCancelButton());
-
-        linearLayout.bringToFront();
-        ConstraintLayout ll = getView().findViewById(R.id.constraintLayout);
-        ll.setOnClickListener(this::onClickOutSide);
     }
 
     private LinearLayout createSubmitAndCancelButton(){
@@ -183,8 +187,10 @@ public class FormFragment extends Fragment {
     public void onSubmit(View v) {
         for (Field field : this.getAnotatedFields()) {
             String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
-            OtherUtil.runGetter(field, this.fieldInformations, text);
+            OtherUtil.runSetter(field, this.fieldInformations, text);
         }
+
+        this.submitable.onSubmit(this.fieldInformations);
 
         closeFragment();
     }
@@ -212,5 +218,14 @@ public class FormFragment extends Fragment {
                 closeFragment();
                 break;
         }
+    }
+
+    /**
+     * Kann gesteuert werden wo man dass resultat bekommt.
+     * @param value
+     * @return
+     */
+    public Object onSubmit(Object value) {
+        throw new NotImplementedException("Diese Methode muss überschrieben werden.");
     }
 }
