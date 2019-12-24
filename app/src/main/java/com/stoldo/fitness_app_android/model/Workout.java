@@ -1,8 +1,5 @@
 package com.stoldo.fitness_app_android.model;
 
-import androidx.annotation.LayoutRes;
-
-import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;

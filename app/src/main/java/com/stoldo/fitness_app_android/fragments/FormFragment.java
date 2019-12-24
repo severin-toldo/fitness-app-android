@@ -35,7 +35,7 @@ import java.util.Map;
 
 import lombok.Setter;
 
-public class FormFragment extends Fragment implements Submitable {
+public class FormFragment extends Fragment {
 
     //private FormViewModel mViewModel;
     private Object fieldInformations = null;
@@ -185,6 +185,9 @@ public class FormFragment extends Fragment implements Submitable {
     }
 
     public void onSubmit(View v) {
+        if(this.submitable == null){
+            throw new NotImplementedException("Diese Methode muss überschrieben werden.");
+        }
         for (Field field : this.getAnotatedFields()) {
             String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
             OtherUtil.runSetter(field, this.fieldInformations, text);
@@ -218,14 +221,5 @@ public class FormFragment extends Fragment implements Submitable {
                 closeFragment();
                 break;
         }
-    }
-
-    /**
-     * Kann gesteuert werden wo man dass resultat bekommt.
-     * @param value
-     * @return
-     */
-    public Object onSubmit(Object value) {
-        throw new NotImplementedException("Diese Methode muss überschrieben werden.");
     }
 }
