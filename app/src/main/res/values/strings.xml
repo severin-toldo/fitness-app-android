@@ -9,11 +9,20 @@
     <string name="activity_workouts">Workouts</string>
     <string name="activity_exercise_list">Übungen</string>
 
+    <!-- TODO are those used somnewhere?? -->
     <string name="placeholder_workout_title">${WORKOUT_TITLE}</string>
     <string name="placeholder_workout_description">${WORKOUT_DESCRIPTION}</string>
     <string name="placeholder_exercise_seconds">${SECONDS}</string>
     <string name="placeholder_exercise_title">${EXERCISE_TITLE}</string>
     <string name="placeholder_exercise_description">${EXERCISE_DESCRIPTION}</string>
+
+
+    <string name="placeholder_exercise_remaining_seconds">${RS}</string>
+    <string name="placeholder_exercise_next_exercise">${NEXT_EXERCISE}</string>
+
+
+    <!-- wtf is this?? is it used? if yes replace and remove -->
     <string name="title_activity_exercise_list">ExerciseListActivity</string>
     <string name="title_activity_show_popup">ShowPopup</string>
+    <string name="title_activity_exercise_start">ExerciseStartActivity</string>
 </resources>

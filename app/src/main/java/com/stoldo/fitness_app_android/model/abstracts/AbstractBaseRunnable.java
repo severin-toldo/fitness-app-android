@@ -4,7 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class AbstractBaseRunnable implements Runnable {
     private Thread thread;
-    private final AtomicBoolean running = new AtomicBoolean(false);
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
     private String threadName;
 
     public AbstractBaseRunnable(String threadName) {
@@ -14,35 +14,27 @@ public abstract class AbstractBaseRunnable implements Runnable {
     public void startThread() {
         thread = new Thread(this);
         thread.setName(threadName);
+        isRunning.set(true);
         thread.start();
     }
 
     public void stopThread() {
-        running.set(false);
+        onStop();
+        isRunning.set(false);
 
         // interrupts thread if the normal stop doesn't work (long sleep for example)
-        if (thread.isAlive()) {
+        if (isAlive()) {
             thread.interrupt();
         }
     }
 
-    @Override
-    public void run() {
-        running.set(true);
-        while (running.get()) {
-            execute();
-        }
-    }
-
-    // TODO maybe remove
     public boolean isRunning() {
-        return running.get();
+        return isRunning.get();
     }
 
-    // TODO maybe remove
     public boolean isAlive() {
         return thread.isAlive();
     }
 
-    public abstract void execute();
+    protected void onStop() {}
 }

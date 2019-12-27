@@ -121,8 +121,6 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
         finalizeAction(listViewData.getItems(), listViewData.getDefaultItemClickMethod(), "cancel");
     }
 
-    // TODO problem: if you add an item its only there in this component. However the click listener is inside the activity which doesnt knwo this new item! there for index exception,
-    // TODO solution: move clicklisteners in this component and pass the activity or fragment
     private void onAdd() {
         finalizeAction(editedItems, listViewData.getEditItemClickMethod(), "add");
         // TODO somehow make and input output system

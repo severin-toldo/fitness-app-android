@@ -1,20 +1,25 @@
 package com.stoldo.fitness_app_android.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.stoldo.fitness_app_android.R;
+import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.Exercise;
+import com.stoldo.fitness_app_android.model.ListViewData;
+import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
-public class ExerciseListActivity extends AppCompatActivity {
+public class ExerciseListActivity extends AppCompatActivity implements Subscriber {
     private List<Exercise> exercises = new ArrayList<>();
     private Integer workoutId;
     private ExerciseService exerciseService = (ExerciseService) OtherUtil.getService(ExerciseService.class);
@@ -25,29 +30,56 @@ public class ExerciseListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exercise_list);
         setTitle(R.string.activity_exercise_list);
 
-        Integer workoutId = getIntent().getIntExtra(IntentParams.WORKOUT_ID.name(), 0);
-        exercises = exerciseService.getExercisesByWorkoutId(workoutId);
-        this.workoutId = workoutId;
+        // TODO proper error handling
+        try {
+            Integer workoutId = getIntent().getIntExtra(IntentParams.WORKOUT_ID.name(), 0);
+            this.workoutId = workoutId;
+            exercises = exerciseService.getExercisesByWorkoutId(workoutId);
 
-        // TODO use ListViewData here. Hint: Normal click listneer should start ExerciseStartAvticy, Edit click listener should start FormFragment
-        // TODO see mainactivity for examples
-        // TODO layout: R.layout.exercise_item
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.exercise_list_container, ListViewFragment.<Exercise>newInstance(exercises, getExerciseClickListener()))
-//                    .commitNow();
-//        }
+            setUpExerciseListView(savedInstanceState);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    // TODO refavtor to normal method instead of actual click listener --> stuff is new over reflection!
-//    public AdapterView.OnItemClickListener getExerciseClickListener() {
-//        return (AdapterView<?> parent, View view, int position, long id) -> {
-//            Exercise clickedExercise = exercises.get(position);
-//
-//            Intent intent = new Intent(ExerciseListActivity.this, ExerciseStartActivity.class);
-//            intent.putExtra(IntentParams.EXERCISE_ID.name(), clickedExercise.getId());
-//            intent.putExtra(IntentParams.WORKOUT_ID.name(), workoutId);
-//            startActivity(intent);
-//        };
-//    }
+    @Override
+    public void update(Map<String, Object> data) {
+        // TODO
+    }
+
+    private void setUpExerciseListView(Bundle savedInstanceState) throws Exception {
+        ListViewData<ExerciseListActivity, Exercise> listViewData = new ListViewData<>();
+        listViewData.setItems(exercises);
+        listViewData.setItemLayout(R.layout.exercise_item);
+        listViewData.setListViewSubscriber(this);
+        listViewData.setDefaultItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("defaultOnExerciseClick", Exercise.class));
+        listViewData.setEditItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("editOnExerciseClick", Exercise.class));
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.exercise_list_container, ListViewFragment.newInstance(listViewData))
+                    .commitNow();
+        }
+    }
+
+    public void defaultOnExerciseClick(Exercise clickedExercise) {
+        // TODO error handling
+        try {
+            Intent intent = new Intent(ExerciseListActivity.this, ExerciseStartActivity.class);
+            intent.putExtra(IntentParams.EXERCISE_ID.name(), clickedExercise.getId());
+            intent.putExtra(IntentParams.WORKOUT_ID.name(), workoutId);
+            startActivity(intent);
+        } catch (Exception e) {
+            // TODO notify parent or fragment
+            e.printStackTrace();
+        }
+    }
+
+    // TODO
+    // Hint: Edit click listener should start FormFragment do edit an exercise
+    public void editOnExerciseClick(Exercise clickedExercise) {
+//        getSupportFragmentManager().beginTransaction()
+//                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout, this,this))
+//                .commitNow();
+    }
 }

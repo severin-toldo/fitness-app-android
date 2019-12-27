@@ -5,21 +5,37 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.util.TypedValue;
 
+import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.SingletonService;
 
+import java.util.Arrays;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class OtherUtil {
+    // TODO replace with model
     public static Map<String, Object> getEditMenuEventMap(String actionValue, Boolean editModeValue) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("action", actionValue);
-        data.put("editMode", editModeValue);
-        return data;
+        return getEventMap(Arrays.asList("action", "editMode"), Arrays.asList(actionValue, editModeValue));
+    }
+
+    // TODO replace with model
+    public static Map<String, Object> getTimerEventMap(Subscriber subscriberValue, Integer secondsValue) {
+        return getEventMap(Arrays.asList("subscriber", "seconds"), Arrays.asList(subscriberValue, secondsValue));
+    }
+
+    // TODO replace with model
+    public static Map<String, Object> getEventMap(List<String> keys, List<Object> values) {
+        Map<String, Object> map = new HashMap<>();
+        for (int i = 0; i < keys.size(); i++) {
+            map.put(keys.get(i), values.get(i));
+        }
+
+        return map;
     }
 
     public static int convertDpToPixel(int dp, Context context){
@@ -31,6 +47,7 @@ public class OtherUtil {
         );
     }
 
+    // TODO unify
     public static void runSetter(Field field, Object o, Object value) {
         // MZ: Find the correct method
         for (Method method : o.getClass().getMethods()) {
@@ -48,6 +65,7 @@ public class OtherUtil {
         }
     }
 
+    // TODO unify
     public static Object runGetter(Field field, Object o) {
         // MZ: Find the correct method
         for (Method method : o.getClass().getMethods()) {
@@ -71,7 +89,7 @@ public class OtherUtil {
         return index >= 0 && index < listSize;
     }
 
-    // TODO impment in savable
+    // TODO implement in savable
     public static String generateUUID() {
         return UUID.randomUUID().toString();
     }
