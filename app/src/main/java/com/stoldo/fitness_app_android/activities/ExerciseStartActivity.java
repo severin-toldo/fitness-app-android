@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class ExerciseStartActivity extends AppCompatActivity implements Subscriber {
+public class ExerciseStartActivity extends AppCompatActivity implements Subscriber<TimerEvent> {
     // Views
     private ImageButton pauseExerciseButton;
     private ImageButton playExerciseButton;
@@ -79,10 +79,9 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
      * is called when seconds change.
      * */
     @Override
-    public void update(Event event) {
+    public void update(TimerEvent event) {
         // TODO cast timer event first then also handle timetypes etc
-        // TODO falseTheThrows
-        Integer remainingSeconds = ((TimerEvent) event).getSeconds();
+        Integer remainingSeconds = event.getSeconds();
 
         runOnUiThread(() -> {
             if (remainingSeconds != 0) {

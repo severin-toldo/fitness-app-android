@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ListViewFragment<S extends Subscriber, I extends ListItem> extends Fragment implements Subscriber {
+public class ListViewFragment<S extends Subscriber, I extends ListItem> extends Fragment implements Subscriber<ActionEvent> {
     private ListViewData<S, I> listViewData;
 
     private boolean editMode = false;
@@ -63,12 +63,11 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
     }
 
     @Override
-    public void update(Event data) {
-        ActionEvent actionEvent = (ActionEvent) data;
-        editMode = actionEvent.getEditMode();
+    public void update(ActionEvent data) {
+        editMode = data.getEditMode();
 
         // TODO is there nicer solution?
-        switch (actionEvent.getActionType()) {
+        switch (data.getActionType()) {
             case EDIT:
                 onEdit();
                 break;

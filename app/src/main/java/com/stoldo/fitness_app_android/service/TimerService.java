@@ -4,16 +4,13 @@ import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.abstracts.AbstractBaseRunnable;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
-import com.stoldo.fitness_app_android.model.enums.ErrorCode;
-import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Singleton
-public class TimerService extends AbstractAsyncService<TimerEvent> implements Subscriber {
+public class TimerService extends AbstractAsyncService<TimerEvent> implements Subscriber<TimerEvent> {
     private TimerRunnable serviceRunnable;
     private TimerEvent lastTimerEvent;
 
@@ -26,9 +23,8 @@ public class TimerService extends AbstractAsyncService<TimerEvent> implements Su
     }
 
     @Override
-    public void update(Event event) {
-        OtherUtil.falseThenThrow(event instanceof TimerEvent, new IllegalArgumentException(ErrorCode.E1001.getErrorMsg("event", TimerEvent.class.getName())));
-        lastTimerEvent = (TimerEvent) event;
+    public void update(TimerEvent event) {
+        lastTimerEvent = event;
     }
 
     public void pause() {
