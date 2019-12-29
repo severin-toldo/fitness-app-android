@@ -1,10 +1,10 @@
 package com.stoldo.fitness_app_android.model;
 
+import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Observable {
     private List<Subscriber> subscribers = new ArrayList<>();
@@ -17,7 +17,15 @@ public class Observable {
         subscribers.remove(subscriber);
     }
 
-    public void notifySubscribers(Map<String, Object> data) {
-        subscribers.forEach(subscriber -> subscriber.update(data));
+    public void subscribe(List<Subscriber> subscribers) {
+        subscribers.forEach(subscriber -> subscribe(subscriber));
+    }
+
+    public void unsubscribe(List<Subscriber> subscribers) {
+        subscribers.forEach(subscriber -> unsubscribe(subscriber));
+    }
+
+    public void notifySubscribers(Event event) {
+        subscribers.forEach(subscriber -> subscriber.update(event));
     }
 }

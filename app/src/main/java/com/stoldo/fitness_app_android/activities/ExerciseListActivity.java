@@ -9,6 +9,7 @@ import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.Exercise;
 import com.stoldo.fitness_app_android.model.ListViewData;
+import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
@@ -16,7 +17,6 @@ import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class ExerciseListActivity extends AppCompatActivity implements Subscriber {
@@ -43,7 +43,7 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     }
 
     @Override
-    public void update(Map<String, Object> data) {
+    public void update(Event event) {
         // TODO
     }
 

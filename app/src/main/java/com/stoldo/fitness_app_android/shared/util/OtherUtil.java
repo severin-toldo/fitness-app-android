@@ -97,4 +97,13 @@ public class OtherUtil {
     public static Object getService(Class serviceClass) {
         return SingletonService.getInstance(null).getSingletonByClass(serviceClass);
     }
+
+    /**
+     * Throws passed exception if passed boolean is false
+     * */
+    public static void falseThenThrow(boolean b, RuntimeException e) throws RuntimeException {
+        if (!b) {
+            throw e; // TODO logging
+        }
+    }
 }

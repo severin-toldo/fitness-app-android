@@ -10,6 +10,7 @@ import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Workout;
+import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
@@ -18,7 +19,6 @@ import com.stoldo.fitness_app_android.service.WorkoutService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements Subscriber, Submitable {
     private List<Workout> workouts = new ArrayList<>();
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber, Submi
     }
 
     @Override
-    public void update(Map<String, Object> data) {
+    public void update(Event data) {
         // TODO what is this used for? -> probably for FromFragment?
     }
 

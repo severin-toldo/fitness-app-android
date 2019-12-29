@@ -2,16 +2,17 @@ package com.stoldo.fitness_app_android.service;
 
 
 import com.stoldo.fitness_app_android.model.abstracts.AbstractBaseRunnable;
-import com.stoldo.fitness_app_android.model.interfaces.ServiceInterface;
+import com.stoldo.fitness_app_android.model.interfaces.Event;
+import com.stoldo.fitness_app_android.model.interfaces.Service;
 
-import java.util.Map;
+import java.util.List;
 
 
-public abstract class AbstractAsyncService implements ServiceInterface {
+public abstract class AbstractAsyncService<E extends Event> implements Service<E> {
     @Override
-    public void startService(Map<String, Object> data) {
+    public void startService(List<E> events) {
         stopService();
-        setServiceRunnable(data);
+        setServiceRunnable(events);
         getServiceRunnable().startThread();
     }
 
@@ -24,5 +25,5 @@ public abstract class AbstractAsyncService implements ServiceInterface {
     }
 
     protected abstract AbstractBaseRunnable getServiceRunnable();
-    protected abstract void setServiceRunnable(Map<String, Object> data);
+    protected abstract void setServiceRunnable(List<E> events);
 }

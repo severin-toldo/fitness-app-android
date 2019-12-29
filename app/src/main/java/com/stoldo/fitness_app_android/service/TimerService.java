@@ -3,28 +3,32 @@ package com.stoldo.fitness_app_android.service;
 import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.abstracts.AbstractBaseRunnable;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
+import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
+import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 @Singleton
-public class TimerService extends AbstractAsyncService implements Subscriber {
+public class TimerService extends AbstractAsyncService<TimerEvent> implements Subscriber {
     private TimerRunnable serviceRunnable;
-    private Integer remainingSeconds;
+    private TimerEvent lastTimerEvent;
 
     private TimerService() {}
 
     @Override
-    protected void setServiceRunnable(Map<String, Object> data) {
-        data.put("service", this);
-        serviceRunnable = new TimerRunnable(data);
+    protected void setServiceRunnable(List<TimerEvent> events) {
+        events.forEach(event -> event.addSubscriber(this));
+        serviceRunnable = new TimerRunnable(events);
     }
 
     @Override
-    public void update(Map<String, Object> data) {
-        remainingSeconds = (Integer) data.get("remainingSeconds");
+    public void update(Event event) {
+        OtherUtil.falseThenThrow(event instanceof TimerEvent, new IllegalArgumentException(ErrorCode.E1001.getErrorMsg("event", TimerEvent.class.getName())));
+        lastTimerEvent = (TimerEvent) event;
     }
 
     public void pause() {
@@ -32,9 +36,11 @@ public class TimerService extends AbstractAsyncService implements Subscriber {
     }
 
     public void resume() {
-        Map<String, Object> data = serviceRunnable.getData();  // gets old data
-        data.put("seconds", remainingSeconds); // puts "remembered seconds in"
-        startService(data);
+        // TODO this part event needed?
+//        TimerEvent oldData = serviceRunnable.getCurrentData();  // gets old data
+//        oldData.setSeconds(lastTimerEvent);
+//        data.put("seconds", remainingSeconds); // puts "remembered seconds in"
+        startService(Arrays.asList(lastTimerEvent));
     }
 
     /**
@@ -62,22 +68,35 @@ public class TimerService extends AbstractAsyncService implements Subscriber {
      * */
     private class TimerRunnable extends AbstractBaseRunnable {
         @lombok.Getter
-        private Map<String, Object> data;
+        private TimerEvent currentEvent; // TODO if above not needed remove this
+        private List<TimerEvent> data;
         private Observable observable = new Observable();
 
-        private TimerRunnable(Map<String, Object> data) {
+        private TimerRunnable(List<TimerEvent> data) {
             super(TimerRunnable.class.getName());
             this.data = data;
         }
 
         @Override
         public void run() {
-            observable.subscribe((Subscriber) data.get("subscriber"));
-            observable.subscribe((Subscriber) data.get("service"));
-            Integer seconds = (Integer) data.get("seconds");
+            // "while for each" --> should always check if thread is still running
+            int index = 0;
+            while(index < data.size() && isRunning()) {
+                TimerEvent timerEvent = data.get(index);
+                currentEvent = timerEvent;
+                countDown(timerEvent);
+                index++;
+            }
+        }
+
+        private void countDown(TimerEvent timerEvent) {
+            observable.subscribe(timerEvent.getSubscribers());
+
+            Integer seconds = timerEvent.getSeconds();
 
             while (seconds != 0 && isRunning()) {
-                observable.notifySubscribers(OtherUtil.getEventMap(Arrays.asList("remainingSeconds"), Arrays.asList(seconds)));
+                timerEvent.setSeconds(seconds);
+                observable.notifySubscribers(timerEvent);
 
                 try {
                     Thread.sleep(1000);
@@ -87,12 +106,8 @@ public class TimerService extends AbstractAsyncService implements Subscriber {
                 seconds--;
             }
 
-            observable.notifySubscribers(OtherUtil.getEventMap(Arrays.asList("remainingSeconds"), Arrays.asList(seconds)));
-        }
-
-        // TODO implement
-        private void countDown(Integer seconds) {
-
+            timerEvent.setSeconds(seconds);
+            observable.notifySubscribers(timerEvent);
         }
     }
 }

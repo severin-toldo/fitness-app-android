@@ -10,14 +10,17 @@ import android.widget.TextView;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.Exercise;
+import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
+import com.stoldo.fitness_app_android.model.enums.TimeType;
+import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.TimerService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 
 public class ExerciseStartActivity extends AppCompatActivity implements Subscriber {
@@ -76,8 +79,10 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
      * is called when seconds change.
      * */
     @Override
-    public void update(Map<String, Object> data) {
-        Integer remainingSeconds = (Integer) data.get("remainingSeconds");
+    public void update(Event event) {
+        // TODO cast timer event first then also handle timetypes etc
+        // TODO falseTheThrows
+        Integer remainingSeconds = ((TimerEvent) event).getSeconds();
 
         runOnUiThread(() -> {
             if (remainingSeconds != 0) {
@@ -181,7 +186,12 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
             // TODO put in method -> update current exercise adn move avay from here.
             // TODO also pass break and prepare
             // TODO consider prepare and break... --> update with type and also color change
-            timerService.startService(OtherUtil.getTimerEventMap(this, currentExercise.getSeconds()));
+
+            TimerEvent prepareEvent = new TimerEvent(currentExercise.getPrepareSeconds(), TimeType.PREPARE, Arrays.asList(this));
+            TimerEvent workEvent = new TimerEvent(currentExercise.getSeconds(), TimeType.WORK, Arrays.asList(this));
+            TimerEvent restEvent = new TimerEvent(currentExercise.getRestSeconds(), TimeType.REST, Arrays.asList(this));
+
+            timerService.startService(Arrays.asList(prepareEvent, workEvent, restEvent));
         }
 
         playButtonTouched = true;
