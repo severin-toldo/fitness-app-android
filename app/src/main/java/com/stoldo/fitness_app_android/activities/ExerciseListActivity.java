@@ -9,7 +9,7 @@ import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.Exercise;
 import com.stoldo.fitness_app_android.model.ListViewData;
-import com.stoldo.fitness_app_android.model.interfaces.Event;
+import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ExerciseListActivity extends AppCompatActivity implements Subscriber {
+public class ExerciseListActivity extends AppCompatActivity implements Subscriber<ActionEvent> {
     private List<Exercise> exercises = new ArrayList<>();
     private Integer workoutId;
     private ExerciseService exerciseService = (ExerciseService) OtherUtil.getService(ExerciseService.class);
@@ -43,8 +43,7 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     }
 
     @Override
-    // TODO which event?
-    public void update(Event event) {
+    public void update(ActionEvent actionEvent) {
         // TODO
     }
 

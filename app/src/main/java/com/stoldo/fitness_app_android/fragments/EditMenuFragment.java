@@ -18,7 +18,7 @@ import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 
 public class EditMenuFragment extends Fragment {
-    private Observable observable = new Observable();
+    private Observable observable = new Observable<ActionEvent>();
     private boolean hasAddButton;
 
     // layout components
@@ -28,11 +28,11 @@ public class EditMenuFragment extends Fragment {
     private ImageButton cancelButton;
 
 
-    public static EditMenuFragment newInstance(Subscriber subscriber, boolean hasAddButton) {
+    public static EditMenuFragment newInstance(Subscriber<ActionEvent> subscriber, boolean hasAddButton) {
         return new EditMenuFragment(subscriber, hasAddButton);
     }
 
-    public EditMenuFragment(Subscriber subscriber, boolean hasAddButton) {
+    public EditMenuFragment(Subscriber<ActionEvent> subscriber, boolean hasAddButton) {
         this.observable.subscribe(subscriber);
         this.hasAddButton = hasAddButton;
     }

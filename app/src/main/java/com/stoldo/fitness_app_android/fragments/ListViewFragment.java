@@ -18,7 +18,6 @@ import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
-import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 
@@ -27,13 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ListViewFragment<S extends Subscriber, I extends ListItem> extends Fragment implements Subscriber<ActionEvent> {
+public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListItem> extends Fragment implements Subscriber<ActionEvent> {
     private ListViewData<S, I> listViewData;
 
     private boolean editMode = false;
     private ListView listView;
     private List<I> editedItems;
-    private Observable observable = new Observable();
+    private Observable observable = new Observable<ActionEvent>();
 
 
     public static ListViewFragment newInstance(@lombok.NonNull ListViewData listViewData) {

@@ -13,7 +13,6 @@ import com.stoldo.fitness_app_android.model.Exercise;
 import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.enums.TimeType;
-import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.TimerService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
@@ -84,10 +83,11 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         Integer remainingSeconds = event.getSeconds();
 
         runOnUiThread(() -> {
+            // TODO check for type
             if (remainingSeconds != 0) {
                 remainingSecondsTextView.setText(remainingSeconds.toString());
             } else {
-                // start next exercise
+                // start next exercise --> maybe recuricvly?
             }
         });
     }
@@ -123,7 +123,6 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         nextExerciseTextView = findViewById(R.id.nextExerciseTextView);
     }
 
-    // TODO unit test
     /**
      * this method is called on previous or next button clicked. Updates all the dependet data and stops services etc.
      * */
@@ -166,13 +165,16 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         return exercisesOfWorkout.get(currentExerciseIndex);
     }
 
-    private void onPauseExercise() throws Exception {
+    private void onPauseExercise() {
+        // change ui to play button
         playExerciseButton.setVisibility(View.VISIBLE);
         pauseExerciseButton.setVisibility(View.GONE);
+
         timerService.pause();
     }
 
     private void onPlayExercise() {
+        // change ui to pause button
         playExerciseButton.setVisibility(View.GONE);
         pauseExerciseButton.setVisibility(View.VISIBLE);
 
@@ -185,7 +187,6 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
             // TODO put in method -> update current exercise adn move avay from here.
             // TODO also pass break and prepare
             // TODO consider prepare and break... --> update with type and also color change
-
             TimerEvent prepareEvent = new TimerEvent(currentExercise.getPrepareSeconds(), TimeType.PREPARE, Arrays.asList(this));
             TimerEvent workEvent = new TimerEvent(currentExercise.getSeconds(), TimeType.WORK, Arrays.asList(this));
             TimerEvent restEvent = new TimerEvent(currentExercise.getRestSeconds(), TimeType.REST, Arrays.asList(this));

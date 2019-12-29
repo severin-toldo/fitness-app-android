@@ -1,47 +1,32 @@
 package com.stoldo.fitness_app_android.service;
 
+
 import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.abstracts.AbstractBaseRunnable;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
-import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Singleton
-public class TimerService extends AbstractAsyncService<TimerEvent> implements Subscriber<TimerEvent> {
+public class TimerService extends AbstractAsyncService<TimerEvent> {
     private TimerRunnable serviceRunnable;
-    private TimerEvent lastTimerEvent;
 
     private TimerService() {}
-
-    @Override
-    protected void setServiceRunnable(List<TimerEvent> events) {
-        events.forEach(event -> event.addSubscriber(this));
-        serviceRunnable = new TimerRunnable(events);
-    }
-
-    @Override
-    public void update(TimerEvent event) {
-        lastTimerEvent = event;
-    }
 
     public void pause() {
         stopService();
     }
 
     public void resume() {
-        // TODO this part event needed?
-//        TimerEvent oldData = serviceRunnable.getCurrentData();  // gets old data
-//        oldData.setSeconds(lastTimerEvent);
-//        data.put("seconds", remainingSeconds); // puts "remembered seconds in"
-        startService(Arrays.asList(lastTimerEvent));
+        startService(serviceRunnable.getData());
     }
 
-    /**
-     * data gets passed by the start or stop method in the abstract
-     * */
+    @Override
+    protected void setServiceRunnable(List<TimerEvent> events) {
+        serviceRunnable = new TimerRunnable(events);
+    }
+
     @Override
     protected AbstractBaseRunnable getServiceRunnable() {
         return serviceRunnable;
@@ -64,9 +49,8 @@ public class TimerService extends AbstractAsyncService<TimerEvent> implements Su
      * */
     private class TimerRunnable extends AbstractBaseRunnable {
         @lombok.Getter
-        private TimerEvent currentEvent; // TODO if above not needed remove this
         private List<TimerEvent> data;
-        private Observable observable = new Observable();
+        private Observable observable = new Observable<TimerEvent>();
 
         private TimerRunnable(List<TimerEvent> data) {
             super(TimerRunnable.class.getName());
@@ -79,7 +63,6 @@ public class TimerService extends AbstractAsyncService<TimerEvent> implements Su
             int index = 0;
             while(index < data.size() && isRunning()) {
                 TimerEvent timerEvent = data.get(index);
-                currentEvent = timerEvent;
                 countDown(timerEvent);
                 index++;
             }
@@ -96,8 +79,7 @@ public class TimerService extends AbstractAsyncService<TimerEvent> implements Su
 
                 try {
                     Thread.sleep(1000);
-                } catch (Exception e) {
-                }
+                } catch (Exception e) {}
 
                 seconds--;
             }
