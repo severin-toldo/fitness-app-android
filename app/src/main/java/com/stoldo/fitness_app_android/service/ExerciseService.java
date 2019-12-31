@@ -17,6 +17,7 @@ public class ExerciseService {
         for (int i = 0; i < 20; i++) {
             Exercise e = new Exercise();
 
+            e.setId(i);
             e.setTitle("Exercise title " + i);
             e.setDescription("Desc " + i);
             e.setSeconds(i + 10);

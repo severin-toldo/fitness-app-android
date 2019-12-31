@@ -13,11 +13,12 @@ import android.widget.ImageButton;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.Observable;
+import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
+import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 public class EditMenuFragment extends Fragment {
-    private Observable observable = new Observable();
+    private Observable observable = new Observable<ActionEvent>();
     private boolean hasAddButton;
 
     // layout components
@@ -27,11 +28,11 @@ public class EditMenuFragment extends Fragment {
     private ImageButton cancelButton;
 
 
-    public static EditMenuFragment newInstance(Subscriber subscriber, boolean hasAddButton) {
+    public static EditMenuFragment newInstance(Subscriber<ActionEvent> subscriber, boolean hasAddButton) {
         return new EditMenuFragment(subscriber, hasAddButton);
     }
 
-    public EditMenuFragment(Subscriber subscriber, boolean hasAddButton) {
+    public EditMenuFragment(Subscriber<ActionEvent> subscriber, boolean hasAddButton) {
         this.observable.subscribe(subscriber);
         this.hasAddButton = hasAddButton;
     }
@@ -52,24 +53,24 @@ public class EditMenuFragment extends Fragment {
         editButton = view.findViewById(R.id.edit_button);
         editButton.setOnClickListener((View v) ->  {
             setVisibility(View.GONE, View.VISIBLE, hasAddButton ? View.VISIBLE : View.GONE, View.VISIBLE);
-            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("edit", true));
+            observable.notifySubscribers(new ActionEvent(true, ActionType.EDIT));
         });
 
         confirmButton = view.findViewById(R.id.confirm_button);
         confirmButton.setOnClickListener((View v) ->  {
             setDefaultVisibility();
-            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("confirm", false));
+            observable.notifySubscribers(new ActionEvent(false, ActionType.CONFIRM));
         });
 
         addButton = view.findViewById(R.id.add_button);
         addButton.setOnClickListener((View v) ->  {
-            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("add", true));
+            observable.notifySubscribers(new ActionEvent(true, ActionType.ADD));
         });
 
         cancelButton = view.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener((View v) -> {
             setDefaultVisibility();
-            observable.notifySubscribers(OtherUtil.getEditMenuEventMap("cancel", false));
+            observable.notifySubscribers(new ActionEvent(false, ActionType.CANCEL));
         });
 
         setDefaultVisibility();

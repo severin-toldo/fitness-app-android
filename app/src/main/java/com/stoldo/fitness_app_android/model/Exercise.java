@@ -35,7 +35,7 @@ public class Exercise implements ListItem {
     private String level; // weight or niveu, ex. 20kg, Niveau 5
 
     @FormField(type = FormFieldType.NUMBERFIELD)
-    private Integer breakSeconds;
+    private Integer restSeconds;
 
     @FormField(type = FormFieldType.IMAGE)
     private List<String> imagePaths; // TODO make sure to support also gif format

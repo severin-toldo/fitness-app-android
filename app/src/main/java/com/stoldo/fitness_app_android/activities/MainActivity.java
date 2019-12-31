@@ -10,16 +10,17 @@ import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Workout;
+import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
+import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.service.SingletonService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements Subscriber, Submitable {
+public class MainActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
     private List<Workout> workouts = new ArrayList<>();
     ListViewFragment workoutListViewFragment = null;
     private WorkoutService workoutService = null;
@@ -38,48 +39,28 @@ public class MainActivity extends AppCompatActivity implements Subscriber, Submi
 
             workoutService = (WorkoutService) singletonService.getSingletonByClass(WorkoutService.class);
             workouts = workoutService.getWorkouts();
+
             setUpWorkoutListView(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void setUpWorkoutListView(Bundle savedInstanceState) {
-        ListViewData<MainActivity, Workout> listViewData = new ListViewData<>();
-        listViewData.setItems(workouts);
-        listViewData.setItemLayout(R.layout.workout_item);
-        listViewData.setListViewSubscriber(this);
-
-        try {
-            listViewData.setDefaultItemClickMethod(MainActivity.class.getDeclaredMethod("defaultOnWorkoutClick", Workout.class));
-            listViewData.setEditItemClickMethod(MainActivity.class.getDeclaredMethod("editOnWorkoutClick", Workout.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (savedInstanceState == null) {
-            workoutListViewFragment = ListViewFragment.newInstance(listViewData);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.workout_list_container, workoutListViewFragment)
-                    .commitNow();
-        }
-
-    }
-
-    private void updateWorkoutListView(){
-        workoutListViewFragment.updateItems(this.workouts);
-    }
-
-    // TODO what is this used for? -> probably for FromFragment?
     @Override
-    public void update(Map<String, Object> data) {
-//        Log.d("MYDEBUG", "hello " + data.get("action") + ", " + data.get("editMode"));
+    public void update(ActionEvent data) {
+        // TODO what is this used for? -> probably for FromFragment?
+    }
+
+    @Override
+    public Object onSubmit(Object value) {
+        workoutListViewFragment.updateItems(this.workouts);
+        return null;
     }
 
     public void defaultOnWorkoutClick(Workout clickedWorkout) {
         try {
             Intent intent = new Intent(MainActivity.this, ExerciseListActivity.class);
-            intent.putExtra("WORKOUT_ID", clickedWorkout.getId());
+            intent.putExtra(IntentParams.WORKOUT_ID.name(), clickedWorkout.getId());
             startActivity(intent);
         } catch (Exception e) {
             // TODO notify parent or fragment
@@ -95,9 +76,20 @@ public class MainActivity extends AppCompatActivity implements Subscriber, Submi
                 .commitNow();
     }
 
-    @Override
-    public Object onSubmit(Object value) {
-        updateWorkoutListView();
-        return null;
+    private void setUpWorkoutListView(Bundle savedInstanceState) throws Exception {
+        ListViewData<MainActivity, Workout> listViewData = new ListViewData<>();
+        listViewData.setItems(workouts);
+        listViewData.setItemLayout(R.layout.workout_item);
+        listViewData.setListViewSubscriber(this);
+        listViewData.setDefaultItemClickMethod(MainActivity.class.getDeclaredMethod("defaultOnWorkoutClick", Workout.class));
+        listViewData.setEditItemClickMethod(MainActivity.class.getDeclaredMethod("editOnWorkoutClick", Workout.class));
+
+        workoutListViewFragment = ListViewFragment.newInstance(listViewData);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.workout_list_container, workoutListViewFragment)
+                    .commitNow();
+        }
     }
 }

@@ -1,23 +1,37 @@
 package com.stoldo.fitness_app_android.model;
 
+import com.stoldo.fitness_app_android.model.interfaces.Event;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class Observable {
-    private List<Subscriber> subscribers = new ArrayList<>();
+public class Observable<E extends Event> {
+    private List<Subscriber<E>> subscribers = new ArrayList<>();
 
-    public void subscribe(Subscriber subscriber) {
-        subscribers.add(subscriber);
+    public void subscribe(Subscriber<E> subscriber) {
+        if (!hasAlreadySubscribed(subscriber)) {
+            subscribers.add(subscriber);
+        }
     }
 
-    public void unsubscribe(Subscriber subscriber) {
+    public boolean hasAlreadySubscribed(Subscriber<E> subscriber) {
+        return subscribers.contains(subscriber);
+    }
+
+    public void unsubscribe(Subscriber<E> subscriber) {
         subscribers.remove(subscriber);
     }
 
-    public void notifySubscribers(Map<String, Object> data) {
-        subscribers.forEach(subscriber -> subscriber.update(data));
+    public void subscribe(List<Subscriber<E>> subscribers) {
+        subscribers.forEach(subscriber -> subscribe(subscriber));
+    }
+
+    public void unsubscribe(List<Subscriber<E>> subscribers) {
+        subscribers.forEach(subscriber -> unsubscribe(subscriber));
+    }
+
+    public void notifySubscribers(E event) {
+        subscribers.forEach(subscriber -> subscriber.update(event));
     }
 }

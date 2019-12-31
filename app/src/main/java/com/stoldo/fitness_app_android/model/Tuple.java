@@ -13,6 +13,4 @@ public class Tuple<K, V> {
         this.key = key;
         this.value = value;
     }
-
-
 }

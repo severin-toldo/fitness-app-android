@@ -16,23 +16,23 @@ import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.CustomListViewAdapter;
 import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Observable;
+import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
+import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
-public class ListViewFragment<S extends Subscriber, I extends ListItem> extends Fragment implements Subscriber {
+public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListItem> extends Fragment implements Subscriber<ActionEvent> {
     private ListViewData<S, I> listViewData;
 
     private boolean editMode = false;
     private ListView listView;
     private List<I> editedItems;
-    private Observable observable = new Observable();
+    private Observable observable = new Observable<ActionEvent>();
 
 
     public static ListViewFragment newInstance(@lombok.NonNull ListViewData listViewData) {
@@ -62,20 +62,21 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
     }
 
     @Override
-    public void update(Map<String, Object> data) {
-        editMode = (Boolean) data.get("editMode");
+    public void update(ActionEvent data) {
+        editMode = data.getEditMode();
+
         // TODO is there nicer solution?
-        switch ((String) data.get("action")) {
-            case "edit":
+        switch (data.getActionType()) {
+            case EDIT:
                 onEdit();
                 break;
-            case "cancel":
+            case CANCEL:
                 onCancel();
                 break;
-            case "add":
+            case ADD:
                 onAdd();
                 break;
-            case "confirm":
+            case CONFIRM:
                 onConfirm();
                 break;
         }
@@ -113,18 +114,16 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
     // TODO click on item crashes the app. find out if in edit mode or in normal mode
     private void onEdit() {
         editedItems = new ArrayList<>(listViewData.getItems());
-        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), "edit");
+        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), ActionType.EDIT);
     }
 
     private void onCancel() {
         editedItems.clear();
-        finalizeAction(listViewData.getItems(), listViewData.getDefaultItemClickMethod(), "cancel");
+        finalizeAction(listViewData.getItems(), listViewData.getDefaultItemClickMethod(), ActionType.CANCEL);
     }
 
-    // TODO problem: if you add an item its only there in this component. However the click listener is inside the activity which doesnt knwo this new item! there for index exception,
-    // TODO solution: move clicklisteners in this component and pass the activity or fragment
     private void onAdd() {
-        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), "add");
+        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), ActionType.ADD);
         // TODO somehow make and input output system
         // TODO open add form fragment and append to editedItems.
     }
@@ -133,15 +132,15 @@ public class ListViewFragment<S extends Subscriber, I extends ListItem> extends 
         listViewData.getItems().clear();
         listViewData.setItems(new ArrayList<>(editedItems));
         editedItems.clear();
-        finalizeAction(listViewData.getItems(), listViewData.getDefaultItemClickMethod(), "confirm");
+        finalizeAction(listViewData.getItems(), listViewData.getDefaultItemClickMethod(), ActionType.CONFIRM);
         // save stuff, fragment or activy jursitiction? i think both
     }
 
     /**
      * Sets up a new listview with the new data and notifies the subscribe of the action
      * */
-    private void finalizeAction(List<I> items, Method clickMethod, String action) {
+    private void finalizeAction(List<I> items, Method clickMethod, ActionType actionType) {
         setUpListView(items, clickMethod);
-        observable.notifySubscribers(OtherUtil.getEditMenuEventMap(action, editMode));
+        observable.notifySubscribers(new ActionEvent(editMode, actionType));
     }
 }

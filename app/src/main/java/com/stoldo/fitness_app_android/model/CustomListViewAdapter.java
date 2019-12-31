@@ -1,7 +1,6 @@
 package com.stoldo.fitness_app_android.model;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,12 +46,8 @@ public class CustomListViewAdapter<T extends ListItem> extends ArrayAdapter<T> i
         // TODO index out of bounds exception here?
         // TODO error: if click on cancel and then click on item --> Crash
 
-        Log.d("MYDEBUG", "postion: " + position);
-        Log.d("MYDEBUG", "items size: " + data.size());
-
-        //     java.lang.IllegalStateException: The content of the adapter has changed but ListView did not receive a notification. Make sure the content of your adapter is not modified from a background thread, but only from the UI thread. Make sure your adapter calls notifyDataSetChanged() when its content changes. [in ListView(2131230826, class android.widget.ListView) with Adapter(class com.stoldo.fitness_app_android.model.CustomListViewAdapter)]
-        // also google the error
-        // either do this or create a new list view when the content changes (so always);
+//        Log.d("MYDEBUG", "postion: " + position);
+//        Log.d("MYDEBUG", "items size: " + data.size());
 
 
         T dataModel = getItem(position);
