@@ -4,5 +4,7 @@ public enum ActionType {
     EDIT,
     CANCEL,
     ADD,
-    CONFIRM;
+    CONFIRM,
+    PREVIOUS,
+    NEXT;
 }

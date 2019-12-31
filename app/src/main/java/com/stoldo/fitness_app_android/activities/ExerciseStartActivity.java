@@ -1,7 +1,10 @@
 package com.stoldo.fitness_app_android.activities;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import android.util.Log;
 import android.view.View;
@@ -10,10 +13,13 @@ import android.widget.TextView;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.Exercise;
+import com.stoldo.fitness_app_android.model.data.events.SoundEvent;
 import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
+import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.enums.TimeType;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
+import com.stoldo.fitness_app_android.service.SoundService;
 import com.stoldo.fitness_app_android.service.TimerService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
@@ -30,16 +36,21 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
     private ImageButton nextExerciseButton;
     private TextView remainingSecondsTextView;
     private TextView nextExerciseTextView;
+    private ConstraintLayout background;
 
     private List<Exercise> exercisesOfWorkout;
     private Exercise currentExercise;
     private Integer currentExerciseIndex = -1;
     private Exercise previousExercise;
     private Exercise nextExercise;
+    private final TimeType defaultTimeType = TimeType.PREPARE;
+
     private boolean playButtonTouched = false;
+    private TimeType currentTimeType = defaultTimeType;
 
     private WorkoutService workoutService = (WorkoutService) OtherUtil.getService(WorkoutService.class);
     private TimerService timerService = (TimerService) OtherUtil.getService(TimerService.class);
+    private SoundService soundService = (SoundService) OtherUtil.getService(SoundService.class);
 
 
     @Override
@@ -61,7 +72,7 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
             }
 
             setUpViews();
-            updateData(null);
+            onExerciseChange(null);
 
         } catch (Exception e) {
             Log.d("MYDEBUG", e.getMessage());
@@ -72,6 +83,7 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
     public void onDestroy() {
         super.onDestroy();
         timerService.stopService();
+        soundService.stopService();
     }
 
     /**
@@ -79,17 +91,29 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
      * */
     @Override
     public void update(TimerEvent event) {
-        // TODO cast timer event first then also handle timetypes etc
-        Integer remainingSeconds = event.getSeconds();
-
         runOnUiThread(() -> {
-            // TODO check for type
-            if (remainingSeconds != 0) {
-                remainingSecondsTextView.setText(remainingSeconds.toString());
+            if (event.getSeconds() == 0 &&  event.getTimeType() == TimeType.REST) {
+                onExerciseChange(ActionType.NEXT);
             } else {
-                // start next exercise --> maybe recuricvly?
+                onSecondsChange(event);
             }
         });
+    }
+
+    /**
+     * gets called every time the seconds of the timer changes.
+     * based on the time type of the event, it changes background color, emits a sound and updates the seconds in the ui
+     * */
+    private void onSecondsChange(TimerEvent event) {
+        if (event.getTimeType() != currentTimeType) {
+            currentTimeType = event.getTimeType();
+            soundService.startService(Arrays.asList(new SoundEvent(getApplicationContext(), R.raw.boxing_bell)));
+        } else if (event.getSeconds() == 3 || event.getSeconds() == 2 || event.getSeconds() == 1) {
+            soundService.startService(Arrays.asList(new SoundEvent(getApplicationContext(), R.raw.countdown)));
+        }
+
+        remainingSecondsTextView.setText(event.getSeconds().toString());
+        changeBackgroundColorByTimeType(event.getTimeType());
     }
 
     private void setUpViews() {
@@ -120,22 +144,31 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         });
 
         remainingSecondsTextView = findViewById(R.id.remainingSecondsTextView);
+        remainingSecondsTextView.setTextColor(getResources().getColor(R.color.white));
+
         nextExerciseTextView = findViewById(R.id.nextExerciseTextView);
+        nextExerciseTextView.setTextColor(getResources().getColor(R.color.white));
+
+        background = findViewById(R.id.activity_exercise_start_container);
     }
 
     /**
-     * this method is called on previous or next button clicked. Updates all the dependet data and stops services etc.
+     * gets called when the exercise changes and once at the start. Updates all the dependet data and stops services etc.
+     *
+     * @param action the action which should be performed. Valid calues: next, previos, null
      * */
-    private void updateData(String action) {
+    private void onExerciseChange(ActionType action) {
+        timerService.stopService();
+
         // determine new current index
         if (action != null) {
             switch (action) {
-                case "next":
+                case NEXT:
                     if (OtherUtil.isValidIndex(currentExerciseIndex + 1, exercisesOfWorkout.size())) {
                         currentExerciseIndex++;
                     }
                     break;
-                case "previous":
+                case PREVIOUS:
                     if (OtherUtil.isValidIndex(currentExerciseIndex - 1, exercisesOfWorkout.size())) {
                         currentExerciseIndex--;
                     }
@@ -151,10 +184,18 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         // update ui
         remainingSecondsTextView.setText(currentExercise.getPrepareSeconds().toString());
         nextExerciseTextView.setText(nextExercise.getTitle());
+        changeBackgroundColorByTimeType(defaultTimeType);
 
-        // update data and stop timer service
-        playButtonTouched = false;
-        timerService.stopService();
+        if (action == ActionType.NEXT || action == ActionType.PREVIOUS) {
+            startExerciseCountdown();
+        }
+    }
+
+    private void startExerciseCountdown() {
+        TimerEvent prepareEvent = new TimerEvent(currentExercise.getPrepareSeconds(), TimeType.PREPARE, Arrays.asList(this));
+        TimerEvent workEvent = new TimerEvent(currentExercise.getSeconds(), TimeType.WORK, Arrays.asList(this));
+        TimerEvent restEvent = new TimerEvent(currentExercise.getRestSeconds(), TimeType.REST, Arrays.asList(this));
+        timerService.startService(Arrays.asList(prepareEvent, workEvent, restEvent));
     }
 
     private Exercise getExerciseByIndex(Integer index) {
@@ -165,44 +206,47 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         return exercisesOfWorkout.get(currentExerciseIndex);
     }
 
-    private void onPauseExercise() {
-        // change ui to play button
-        playExerciseButton.setVisibility(View.VISIBLE);
-        pauseExerciseButton.setVisibility(View.GONE);
+    private void changeBackgroundColorByTimeType(TimeType timeType) {
+        OtherUtil.changeStatusbarColor(this, timeType.getBackgroundColor());
+        background.setBackgroundColor(ContextCompat.getColor(this, timeType.getBackgroundColor()));
+    }
 
+    private void onPauseExercise() {
+        showPlayButton();
         timerService.pause();
     }
 
     private void onPlayExercise() {
-        // change ui to pause button
-        playExerciseButton.setVisibility(View.GONE);
-        pauseExerciseButton.setVisibility(View.VISIBLE);
+        showPauseButton();
 
-        // TODO implement cleaner solution
         // start service on first time click, after that always resume
         if (playButtonTouched) {
             timerService.resume();
         } else {
-            // TODO after that next step: implement prepare and break times. --> color change
-            // TODO put in method -> update current exercise adn move avay from here.
-            // TODO also pass break and prepare
-            // TODO consider prepare and break... --> update with type and also color change
-            TimerEvent prepareEvent = new TimerEvent(currentExercise.getPrepareSeconds(), TimeType.PREPARE, Arrays.asList(this));
-            TimerEvent workEvent = new TimerEvent(currentExercise.getSeconds(), TimeType.WORK, Arrays.asList(this));
-            TimerEvent restEvent = new TimerEvent(currentExercise.getRestSeconds(), TimeType.REST, Arrays.asList(this));
-
-            timerService.startService(Arrays.asList(prepareEvent, workEvent, restEvent));
+            startExerciseCountdown();
         }
 
         playButtonTouched = true;
     }
 
     private void onPreviousExercise() {
-        updateData("previous");
+        onExerciseChange(ActionType.PREVIOUS);
+        showPauseButton();
     }
 
     private void onNextExercise() {
-        updateData("next");
+        onExerciseChange(ActionType.NEXT);
+        showPauseButton();
+    }
+
+    private void showPlayButton() {
+        playExerciseButton.setVisibility(View.VISIBLE);
+        pauseExerciseButton.setVisibility(View.GONE);
+    }
+
+    private void showPauseButton() {
+        playExerciseButton.setVisibility(View.GONE);
+        pauseExerciseButton.setVisibility(View.VISIBLE);
     }
 }
 

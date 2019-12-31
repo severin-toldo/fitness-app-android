@@ -1,9 +1,15 @@
 package com.stoldo.fitness_app_android.shared.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Window;
+import android.view.WindowManager;
+
+import androidx.annotation.ColorRes;
+import androidx.core.content.ContextCompat;
 
 import com.stoldo.fitness_app_android.service.SingletonService;
 
@@ -75,10 +81,26 @@ public class OtherUtil {
 
     /**
      * Throws passed exception if passed boolean is false
+     *
+     * @param b condition, if false error is thrown
+     * @param e exception which should be thrown
      * */
     public static void falseThenThrow(boolean b, RuntimeException e) throws RuntimeException {
         if (!b) {
             throw e; // TODO logging
         }
+    }
+
+    /**
+     * Changes the color of the status bar to the passed color
+     *
+     * @param color color to which the status bar color should be changed
+     * @param activity calling activity
+     * */
+    public static void changeStatusbarColor(Activity activity, @ColorRes int color) {
+        Window window = activity.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(activity, color));
     }
 }

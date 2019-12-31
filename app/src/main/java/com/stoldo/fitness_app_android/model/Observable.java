@@ -10,7 +10,13 @@ public class Observable<E extends Event> {
     private List<Subscriber<E>> subscribers = new ArrayList<>();
 
     public void subscribe(Subscriber<E> subscriber) {
-        subscribers.add(subscriber);
+        if (!hasAlreadySubscribed(subscriber)) {
+            subscribers.add(subscriber);
+        }
+    }
+
+    public boolean hasAlreadySubscribed(Subscriber<E> subscriber) {
+        return subscribers.contains(subscriber);
     }
 
     public void unsubscribe(Subscriber<E> subscriber) {
