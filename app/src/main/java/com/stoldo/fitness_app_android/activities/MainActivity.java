@@ -8,20 +8,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
-import com.stoldo.fitness_app_android.model.ListViewData;
-import com.stoldo.fitness_app_android.model.Workout;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
+import com.stoldo.fitness_app_android.model.data.ListViewData;
+import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
+import com.stoldo.fitness_app_android.service.ExerciseService;
 import com.stoldo.fitness_app_android.service.SingletonService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
-    private List<Workout> workouts = new ArrayList<>();
+    private List<WorkoutEntity> workouts = new ArrayList<>();
     ListViewFragment workoutListViewFragment = null;
     private WorkoutService workoutService = null;
 
@@ -39,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
 
             workoutService = (WorkoutService) singletonService.getSingletonByClass(WorkoutService.class);
             workouts = workoutService.getWorkouts();
-
             setUpWorkoutListView(savedInstanceState);
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
         return null;
     }
 
-    public void defaultOnWorkoutClick(Workout clickedWorkout) {
+    public void defaultOnWorkoutClick(WorkoutEntity clickedWorkout) {
         try {
             Intent intent = new Intent(MainActivity.this, ExerciseListActivity.class);
             intent.putExtra(IntentParams.WORKOUT_ID.name(), clickedWorkout.getId());
@@ -68,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
         }
     }
 
-    public void editOnWorkoutClick(Workout clickedWorkout) {
-        FormFragment formFragment = FormFragment.newInstance(clickedWorkout);
+    public void editOnWorkoutClick(WorkoutEntity clickedWorkoutEntity) {
+        FormFragment formFragment = FormFragment.newInstance(clickedWorkoutEntity);
         formFragment.setSubmitable(this::onSubmit);
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.workout_list_container, formFragment)
@@ -77,12 +80,12 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     }
 
     private void setUpWorkoutListView(Bundle savedInstanceState) throws Exception {
-        ListViewData<MainActivity, Workout> listViewData = new ListViewData<>();
+        ListViewData<MainActivity, WorkoutEntity> listViewData = new ListViewData<>();
         listViewData.setItems(workouts);
         listViewData.setItemLayout(R.layout.workout_item);
         listViewData.setListViewSubscriber(this);
-        listViewData.setDefaultItemClickMethod(MainActivity.class.getDeclaredMethod("defaultOnWorkoutClick", Workout.class));
-        listViewData.setEditItemClickMethod(MainActivity.class.getDeclaredMethod("editOnWorkoutClick", Workout.class));
+        listViewData.setDefaultItemClickMethod(MainActivity.class.getDeclaredMethod("defaultOnWorkoutClick", WorkoutEntity.class));
+        listViewData.setEditItemClickMethod(MainActivity.class.getDeclaredMethod("editOnWorkoutClick", WorkoutEntity.class));
 
         workoutListViewFragment = ListViewFragment.newInstance(listViewData);
 

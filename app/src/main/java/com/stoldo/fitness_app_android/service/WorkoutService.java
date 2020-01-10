@@ -1,62 +1,44 @@
 package com.stoldo.fitness_app_android.service;
 
-import com.stoldo.fitness_app_android.model.Exercise;
-import com.stoldo.fitness_app_android.model.Workout;
-import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.stoldo.fitness_app_android.model.abstracts.AbstractSyncService;
+import com.stoldo.fitness_app_android.model.annotaions.Singleton;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
+import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
+import com.stoldo.fitness_app_android.repository.WorkoutRepository;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
+
+import java.sql.SQLException;
 import java.util.List;
 
-@Singleton // TODO extend sync service
-public class WorkoutService {
+@Singleton
+public class WorkoutService extends AbstractSyncService {
+    private WorkoutRepository workoutRepository = (WorkoutRepository) OtherUtil.getSingleton(WorkoutRepository.class);
+    private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingleton(ExerciseService.class);
+
     private WorkoutService() {}
 
-    // TODO implement real
-    // TODO javadoc: get all workouts
-    public List<Workout> getWorkouts() {
-        List<Workout> workouts = new ArrayList<>();
+    public List<WorkoutEntity> getWorkouts() throws SQLException {
+        List<WorkoutEntity> workouts = workoutRepository.findAll();
 
-        for (int i = 0; i < 3; i++) {
-            Workout w = new Workout();
-
-            w.setId(i);
-            w.setTitle("Workout Title " + i);
-            w.setDescription("WK Description " + i);
-            workouts.add(w);
+        for (WorkoutEntity workout : workouts) {
+            workout.setExercises(exerciseService.getExercisesByWorkoutId(workout.getId()));
         }
 
         return workouts;
     }
 
-    // TODO implement real
-    public Workout getWorkoutById(Integer id) {
-        Workout w = new Workout();
+    public WorkoutEntity getWorkoutById(Integer id) throws SQLException {
+        WorkoutEntity workout = workoutRepository.getById(id);
+        workout.setExercises(exerciseService.getExercisesByWorkoutId(workout.getId()));
+        return workout;
+    }
 
-        w.setId(1);
-        w.setDescription("Demo Workout");
-        w.setTitle("Demo WO Title");
-
-        List<Exercise> exercises = new ArrayList<>();
-
-        for (int i = 0; i < 10; i++) {
-            Exercise e = new Exercise();
-            e.setId(i);
-            e.setPosition("3 / 4");
-            e.setNote("Im Note " + i);
-            e.setLevel("34kg");
-            e.setSeconds(10 + i);
-            e.setDescription("Exercise description " + i);
-            e.setTitle("Title E " + i);
-            e.setRestSeconds(5 + i);;
-            e.setImagePaths(Arrays.asList("path/to/image/" + i));
-            e.setPrepareSeconds(i);
-
-            exercises.add(e);
+    public WorkoutEntity saveWorkout(WorkoutEntity workout) throws Exception {
+        for (ExerciseEntity exercise : workout.getExercises()) {
+            exerciseService.saveExercise(exercise);
         }
 
-        w.setExercises(exercises);
-
-        return w;
+        return workoutRepository.save(workout);
     }
 }

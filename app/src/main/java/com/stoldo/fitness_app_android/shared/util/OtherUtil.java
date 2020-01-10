@@ -16,7 +16,6 @@ import com.stoldo.fitness_app_android.service.SingletonService;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.UUID;
 
 public class OtherUtil {
     public static int convertDpToPixel(int dp, Context context){
@@ -70,13 +69,8 @@ public class OtherUtil {
         return index >= 0 && index < listSize;
     }
 
-    // TODO implement in savable
-    public static String generateUUID() {
-        return UUID.randomUUID().toString();
-    }
-
-    public static Object getService(Class serviceClass) {
-        return SingletonService.getInstance(null).getSingletonByClass(serviceClass);
+    public static Object getSingleton(Class singletonClass) {
+        return SingletonService.getInstance(null).getSingletonByClass(singletonClass);
     }
 
     /**
@@ -85,7 +79,7 @@ public class OtherUtil {
      * @param b condition, if false error is thrown
      * @param e exception which should be thrown
      * */
-    public static void falseThenThrow(boolean b, RuntimeException e) throws RuntimeException {
+    public static void falseThenThrow(boolean b, Exception e) throws Exception {
         if (!b) {
             throw e; // TODO logging
         }

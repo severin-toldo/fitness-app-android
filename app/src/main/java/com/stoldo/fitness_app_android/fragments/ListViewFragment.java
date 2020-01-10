@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.CustomListViewAdapter;
-import com.stoldo.fitness_app_android.model.ListViewData;
+import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;

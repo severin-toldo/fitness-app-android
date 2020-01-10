@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
-import com.stoldo.fitness_app_android.model.Exercise;
-import com.stoldo.fitness_app_android.model.ListViewData;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
+import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
@@ -20,9 +20,9 @@ import java.util.List;
 
 
 public class ExerciseListActivity extends AppCompatActivity implements Subscriber<ActionEvent> {
-    private List<Exercise> exercises = new ArrayList<>();
+    private List<ExerciseEntity> exercises = new ArrayList<>();
     private Integer workoutId;
-    private ExerciseService exerciseService = (ExerciseService) OtherUtil.getService(ExerciseService.class);
+    private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingleton(ExerciseService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +48,12 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     }
 
     private void setUpExerciseListView(Bundle savedInstanceState) throws Exception {
-        ListViewData<ExerciseListActivity, Exercise> listViewData = new ListViewData<>();
+        ListViewData<ExerciseListActivity, ExerciseEntity> listViewData = new ListViewData<>();
         listViewData.setItems(exercises);
         listViewData.setItemLayout(R.layout.exercise_item);
         listViewData.setListViewSubscriber(this);
-        listViewData.setDefaultItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("defaultOnExerciseClick", Exercise.class));
-        listViewData.setEditItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("editOnExerciseClick", Exercise.class));
+        listViewData.setDefaultItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("defaultOnExerciseClick", ExerciseEntity.class));
+        listViewData.setEditItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("editOnExerciseClick", ExerciseEntity.class));
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -62,7 +62,7 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
         }
     }
 
-    public void defaultOnExerciseClick(Exercise clickedExercise) {
+    public void defaultOnExerciseClick(ExerciseEntity clickedExercise) {
         // TODO error handling
         try {
             Intent intent = new Intent(ExerciseListActivity.this, ExerciseStartActivity.class);
@@ -77,7 +77,7 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
 
     // TODO
     // Hint: Edit click listener should start FormFragment do edit an exercise
-    public void editOnExerciseClick(Exercise clickedExercise) {
+    public void editOnExerciseClick(ExerciseEntity clickedExercise) {
 //        getSupportFragmentManager().beginTransaction()
 //                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout, this,this))
 //                .commitNow();

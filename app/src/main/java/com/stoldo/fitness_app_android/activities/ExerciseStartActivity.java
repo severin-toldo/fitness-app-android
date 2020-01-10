@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.stoldo.fitness_app_android.R;
-import com.stoldo.fitness_app_android.model.Exercise;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.events.SoundEvent;
 import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
@@ -38,19 +38,19 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
     private TextView nextExerciseTextView;
     private ConstraintLayout background;
 
-    private List<Exercise> exercisesOfWorkout;
-    private Exercise currentExercise;
+    private List<ExerciseEntity> exercisesOfWorkout;
+    private ExerciseEntity currentExercise;
     private Integer currentExerciseIndex = -1;
-    private Exercise previousExercise;
-    private Exercise nextExercise;
+    private ExerciseEntity previousExercise;
+    private ExerciseEntity nextExerciseEntity;
     private final TimeType defaultTimeType = TimeType.PREPARE;
 
     private boolean playButtonTouched = false;
     private TimeType currentTimeType = defaultTimeType;
 
-    private WorkoutService workoutService = (WorkoutService) OtherUtil.getService(WorkoutService.class);
-    private TimerService timerService = (TimerService) OtherUtil.getService(TimerService.class);
-    private SoundService soundService = (SoundService) OtherUtil.getService(SoundService.class);
+    private WorkoutService workoutService = (WorkoutService) OtherUtil.getSingleton(WorkoutService.class);
+    private TimerService timerService = (TimerService) OtherUtil.getSingleton(TimerService.class);
+    private SoundService soundService = (SoundService) OtherUtil.getSingleton(SoundService.class);
 
 
     @Override
@@ -179,11 +179,11 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         // update exercises
         currentExercise = getExerciseByIndex(currentExerciseIndex);
         previousExercise = getExerciseByIndex(currentExerciseIndex - 1);
-        nextExercise = getExerciseByIndex(currentExerciseIndex + 1);
+        nextExerciseEntity = getExerciseByIndex(currentExerciseIndex + 1);
 
         // update ui
         remainingSecondsTextView.setText(currentExercise.getPrepareSeconds().toString());
-        nextExerciseTextView.setText(nextExercise.getTitle());
+        nextExerciseTextView.setText(nextExerciseEntity.getTitle());
         changeBackgroundColorByTimeType(defaultTimeType);
 
         if (action == ActionType.NEXT || action == ActionType.PREVIOUS) {
@@ -198,7 +198,7 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         timerService.startService(Arrays.asList(prepareEvent, workEvent, restEvent));
     }
 
-    private Exercise getExerciseByIndex(Integer index) {
+    private ExerciseEntity getExerciseByIndex(Integer index) {
         if (OtherUtil.isValidIndex(index, exercisesOfWorkout.size())) {
             return exercisesOfWorkout.get(index);
         }
