@@ -1,33 +1,31 @@
 package com.stoldo.fitness_app_android.service;
 
-import com.stoldo.fitness_app_android.model.Exercise;
-import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 
-import java.util.ArrayList;
+import com.stoldo.fitness_app_android.model.abstracts.AbstractSyncService;
+import com.stoldo.fitness_app_android.model.annotaions.Singleton;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
+import com.stoldo.fitness_app_android.repository.ExerciseRepository;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
+
+import java.sql.SQLException;
 import java.util.List;
 
-@Singleton // TODO extend sync service
-public class ExerciseService {
+
+@Singleton
+public class ExerciseService extends AbstractSyncService {
+    private ExerciseRepository exerciseRepository = (ExerciseRepository) OtherUtil.getSingleton(ExerciseRepository.class);
+
     private ExerciseService() {}
 
-    // TODO implement real
-    public List<Exercise> getExercisesByWorkoutId(Integer workoutId) {
-        List<Exercise> workouts = new ArrayList<>();
+    public List<ExerciseEntity> getExercisesByWorkoutId(Integer workoutId) throws SQLException {
+        return exerciseRepository.getExercisesByWorkoutId(workoutId);
+    }
 
-        for (int i = 0; i < 20; i++) {
-            Exercise e = new Exercise();
+    public List<ExerciseEntity> getAllExercises() throws SQLException {
+        return exerciseRepository.findAll();
+    }
 
-            e.setId(i);
-            e.setTitle("Exercise title " + i);
-            e.setDescription("Desc " + i);
-            e.setSeconds(i + 10);
-            e.setLevel("10");
-            e.setNote("Note " + i);
-            e.setPosition("Pos " + i);
-
-            workouts.add(e);
-        }
-
-        return workouts;
+    public ExerciseEntity saveExercise(ExerciseEntity exercise) throws Exception {
+        return exerciseRepository.save(exercise);
     }
 }
