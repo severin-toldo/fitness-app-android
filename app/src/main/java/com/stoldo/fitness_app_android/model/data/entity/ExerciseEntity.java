@@ -2,6 +2,7 @@ package com.stoldo.fitness_app_android.model.data.entity;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.interfaces.Entity;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
@@ -9,6 +10,7 @@ import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 
 import lombok.NoArgsConstructor;
 
+// TODO set index correctly
 @lombok.Getter
 @lombok.Setter
 @NoArgsConstructor
@@ -21,36 +23,36 @@ public class ExerciseEntity implements ListItem, Entity {
     protected Integer workoutId;
 
     @DatabaseField(columnName = "prepare_seconds")
-    @FormField(type = FormFieldType.NUMBERFIELD)
-    private Integer prepareSeconds;
+    @FormField(type = FormFieldType.NUMBERFIELD, ressourceRef = R.string.prepare_seconds, index = 0)
+    private Integer prepareSeconds = 0;
 
     @DatabaseField(columnName = "title", canBeNull = false)
-    @FormField(type = FormFieldType.TEXTFIELD)
+    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.title, index = 0)
     private String title;
 
     @DatabaseField(columnName = "seconds", canBeNull = false)
-    @FormField(type = FormFieldType.NUMBERFIELD)
+    @FormField(type = FormFieldType.NUMBERFIELD, ressourceRef = R.string.seconds, index = 0)
     private Integer seconds;
 
     @DatabaseField(columnName = "description")
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String description;
+    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.description, index = 0)
+    private String description = "";
 
     @DatabaseField(columnName = "note")
-    @FormField(type = FormFieldType.TEXTAREA)
-    private String note;
+    @FormField(type = FormFieldType.TEXTAREA, ressourceRef = R.string.note, index = 0)
+    private String note = "";
 
     @DatabaseField(columnName = "position")
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String position;
+    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.position, index = 0)
+    private String position = "";
 
     @DatabaseField(columnName = "level")
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String level; // weight or niveu, ex. 20kg, Niveau 5
+    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.level, index = 0)
+    private String level = ""; // weight or niveu, ex. 20kg, Niveau 5
 
     @DatabaseField(columnName = "restSeconds")
-    @FormField(type = FormFieldType.NUMBERFIELD)
-    private Integer restSeconds;
+    @FormField(type = FormFieldType.NUMBERFIELD, ressourceRef = R.string.rest_seconds, index = 0)
+    private Integer restSeconds = 0;
 
     // TODO implement properly
 //    @FormField(type = FormFieldType.IMAGE)

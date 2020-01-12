@@ -20,6 +20,7 @@ import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -65,7 +66,6 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
     public void update(ActionEvent data) {
         editMode = data.getEditMode();
 
-        // TODO is there nicer solution?
         switch (data.getActionType()) {
             case EDIT:
                 onEdit();
@@ -78,6 +78,9 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
                 break;
             case CONFIRM:
                 onConfirm();
+                break;
+            case REMOVE:
+                onRemove(data.getItemIndex());
                 break;
         }
     }
@@ -104,14 +107,11 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
     }
 
     public void updateItems(List<I> data){
-        CustomListViewAdapter<I> customListViewAdapter = new CustomListViewAdapter<>(data, listViewData.getItemLayout(), getActivity().getApplicationContext());
+        CustomListViewAdapter<I> customListViewAdapter = new CustomListViewAdapter<>(data, listViewData.getItemLayout(), getActivity().getApplicationContext(), this, editMode);
         listView = getView().findViewById(R.id.element_list_list_view);
-        // TODO display or hide badges here (accoridng to editMode) --> Badeges are item layout jurisiticton! --> well only view but not display / hide
         listView.setAdapter(customListViewAdapter);
     }
 
-    // TODO onRemove and add remove badges
-    // TODO click on item crashes the app. find out if in edit mode or in normal mode
     private void onEdit() {
         editedItems = new ArrayList<>(listViewData.getItems());
         finalizeAction(editedItems, listViewData.getEditItemClickMethod(), ActionType.EDIT);
@@ -136,8 +136,13 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
         // save stuff, fragment or activy jursitiction? i think both
     }
 
+    private void onRemove(int itemIndex) {
+        editedItems.remove(itemIndex);
+        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), ActionType.REMOVE);
+    }
+
     /**
-     * Sets up a new listview with the new data and notifies the subscribe of the action
+     * Sets up a new listview with the new data and notifies the subscriber of the action
      * */
     private void finalizeAction(List<I> items, Method clickMethod, ActionType actionType) {
         setUpListView(items, clickMethod);

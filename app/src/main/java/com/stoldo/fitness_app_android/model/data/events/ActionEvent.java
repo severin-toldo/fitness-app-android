@@ -10,4 +10,10 @@ import com.stoldo.fitness_app_android.model.interfaces.Event;
 public class ActionEvent implements Event {
     private Boolean editMode = false;
     private ActionType actionType;
+    private int itemIndex;
+
+    public ActionEvent(Boolean editMode, ActionType actionType) {
+        this.editMode = editMode;
+        this.actionType = actionType;
+    }
 }

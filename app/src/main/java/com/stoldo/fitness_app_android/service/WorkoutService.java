@@ -25,6 +25,13 @@ public class WorkoutService extends AbstractSyncService {
             workout.setExercises(exerciseService.getExercisesByWorkoutId(workout.getId()));
         }
 
+        // TODO remove
+        for (int i = 0; i < 10; i++) {
+            WorkoutEntity workoutEntity = new WorkoutEntity("Workout " + i);
+            workoutEntity.setId(i + 10);
+            workouts.add(workoutEntity);
+        }
+
         return workouts;
     }
 
@@ -34,7 +41,7 @@ public class WorkoutService extends AbstractSyncService {
         return workout;
     }
 
-    public WorkoutEntity saveWorkout(WorkoutEntity workout) throws Exception {
+    public WorkoutEntity saveWorkout(WorkoutEntity workout) throws SQLException {
         for (ExerciseEntity exercise : workout.getExercises()) {
             exerciseService.saveExercise(exercise);
         }

@@ -1,6 +1,7 @@
 package com.stoldo.fitness_app_android.model.data.entity;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.interfaces.Entity;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
@@ -19,12 +20,12 @@ public class WorkoutEntity implements ListItem, Entity {
     private Integer id;
 
     @DatabaseField(columnName = "title", canBeNull = false)
-    @FormField(type = FormFieldType.TEXTFIELD)
+    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.title, index = 0)
     private String title;
 
     @DatabaseField(columnName = "description")
-    @FormField(type = FormFieldType.TEXTFIELD)
-    private String description;
+    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.description, index = 0)
+    private String description = "";
 
     private List<ExerciseEntity> exercises = new ArrayList<>();
 

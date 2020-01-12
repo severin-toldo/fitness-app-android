@@ -10,8 +10,8 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.Entity;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -52,7 +52,7 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
 //        super.finalize();
 //    }
 
-    public T save(T entity) throws Exception {
+    public T save(T entity) throws SQLException {
         if (entity.getId() == null || (entity.getId() != null && getById(entity.getId()) == null)) {
             return insert(entity);
         } else {
@@ -111,8 +111,11 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
      * @return inserted Entity
      * @throws Exception if insert fails
      * */
-    private T insert(T entity) throws Exception {
-        OtherUtil.falseThenThrow(ENTITY_DAO.create(entity) == 1, new SQLException("Failed to insert Entity")); // TODO as error code
+    private T insert(T entity) throws SQLException {
+        if (ENTITY_DAO.create(entity) != 1) {
+            throw new SQLException(ErrorCode.E1005.getErrorMsg(entity.toString()));
+        }
+
         return ENTITY_DAO.queryForId(getLastSavedId());
     }
 
@@ -123,8 +126,11 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
      * @return updated Entity
      * @throws Exception if update fails
      * */
-    private T update(T entity) throws Exception {
-        OtherUtil.falseThenThrow(ENTITY_DAO.update(entity) == 1, new SQLException("Failed to update Entity")); // TODO as error code
+    private T update(T entity) throws SQLException {
+        if (ENTITY_DAO.update(entity) != 1) {
+            throw new SQLException(ErrorCode.E1007.getErrorMsg(entity.toString()));
+        }
+
         return ENTITY_DAO.queryForId(entity.getId());
     }
 }

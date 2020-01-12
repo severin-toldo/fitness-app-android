@@ -25,7 +25,7 @@ public class ExerciseService extends AbstractSyncService {
         return exerciseRepository.findAll();
     }
 
-    public ExerciseEntity saveExercise(ExerciseEntity exercise) throws Exception {
+    public ExerciseEntity saveExercise(ExerciseEntity exercise) throws SQLException {
         return exerciseRepository.save(exercise);
     }
 }
