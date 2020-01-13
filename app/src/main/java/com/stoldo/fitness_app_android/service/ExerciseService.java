@@ -13,7 +13,7 @@ import java.util.List;
 
 @Singleton
 public class ExerciseService extends AbstractSyncService {
-    private ExerciseRepository exerciseRepository = (ExerciseRepository) OtherUtil.getSingleton(ExerciseRepository.class);
+    private ExerciseRepository exerciseRepository = (ExerciseRepository) OtherUtil.getSingletonInstance(ExerciseRepository.class);
 
     private ExerciseService() {}
 

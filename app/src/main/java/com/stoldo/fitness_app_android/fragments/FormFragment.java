@@ -35,6 +35,7 @@ import java.util.Map;
 
 import lombok.Setter;
 
+// TODO java doc --> Stefano
 public class FormFragment extends Fragment {
 
     //private FormViewModel mViewModel;
@@ -62,9 +63,6 @@ public class FormFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //mViewModel = ViewModelProviders.of(this).get(FormViewModel.class);
-        // TODO: Use the ViewModel
-
         this.CreateViews();
 
         LinearLayout linearLayout = getView().findViewById(R.id.genericLayout);
@@ -94,6 +92,7 @@ public class FormFragment extends Fragment {
                 FormFieldType fieldType = formfield.type();
                 if(fieldType != null){
                     TextView label = new TextView(context);
+                    // TODO get label text view getRessource() from annotation --> Stefano
                     label.setText(field.getName());
                     label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                     EditText view = null;
@@ -103,15 +102,19 @@ public class FormFragment extends Fragment {
                             view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                         case NUMBERFIELD:
-                            break;
-                        case DROPDOWN:
+                            // TODO make number --> Stefano
+                            view = new EditText(context);
+                            view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                         case TEXTAREA:
-                            break;
-                        case IMAGE:
+                            // TODO make textarea --> Stefano
+                            view = new EditText(context);
+                            view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                     }
+
                     view.setText((String)OtherUtil.runGetter(field, this.fieldInformations));
+                    // TODO order by index --> get from annotaiomn --> Stefano
                     labelWithView.put(field.getName(), new Tuple<>(label, view));
                 }
             }
@@ -202,6 +205,7 @@ public class FormFragment extends Fragment {
         closeFragment();
     }
 
+    // TODO please remove this xD --> Stefano
     public void onClickOutSide(View v) {
         cancelCount++;
         switch (cancelCount){

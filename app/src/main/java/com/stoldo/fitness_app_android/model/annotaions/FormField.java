@@ -12,6 +12,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface FormField {
     FormFieldType type();
-    int ressourceRef();
+    int labelResRef();
     int index();
 }

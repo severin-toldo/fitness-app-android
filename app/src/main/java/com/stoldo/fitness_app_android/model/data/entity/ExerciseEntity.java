@@ -23,35 +23,35 @@ public class ExerciseEntity implements ListItem, Entity {
     protected Integer workoutId;
 
     @DatabaseField(columnName = "prepare_seconds")
-    @FormField(type = FormFieldType.NUMBERFIELD, ressourceRef = R.string.prepare_seconds, index = 0)
+    @FormField(type = FormFieldType.NUMBERFIELD, labelResRef = R.string.prepare_seconds, index = 0)
     private Integer prepareSeconds = 0;
 
     @DatabaseField(columnName = "title", canBeNull = false)
-    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.title, index = 0)
+    @FormField(type = FormFieldType.TEXTFIELD, labelResRef = R.string.title, index = 0)
     private String title;
 
     @DatabaseField(columnName = "seconds", canBeNull = false)
-    @FormField(type = FormFieldType.NUMBERFIELD, ressourceRef = R.string.seconds, index = 0)
+    @FormField(type = FormFieldType.NUMBERFIELD, labelResRef = R.string.seconds, index = 0)
     private Integer seconds;
 
     @DatabaseField(columnName = "description")
-    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.description, index = 0)
+    @FormField(type = FormFieldType.TEXTFIELD, labelResRef = R.string.description, index = 0)
     private String description = "";
 
     @DatabaseField(columnName = "note")
-    @FormField(type = FormFieldType.TEXTAREA, ressourceRef = R.string.note, index = 0)
+    @FormField(type = FormFieldType.TEXTAREA, labelResRef = R.string.note, index = 0)
     private String note = "";
 
     @DatabaseField(columnName = "position")
-    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.position, index = 0)
+    @FormField(type = FormFieldType.TEXTFIELD, labelResRef = R.string.position, index = 0)
     private String position = "";
 
     @DatabaseField(columnName = "level")
-    @FormField(type = FormFieldType.TEXTFIELD, ressourceRef = R.string.level, index = 0)
+    @FormField(type = FormFieldType.TEXTFIELD, labelResRef = R.string.level, index = 0)
     private String level = ""; // weight or niveu, ex. 20kg, Niveau 5
 
     @DatabaseField(columnName = "restSeconds")
-    @FormField(type = FormFieldType.NUMBERFIELD, ressourceRef = R.string.rest_seconds, index = 0)
+    @FormField(type = FormFieldType.NUMBERFIELD, labelResRef = R.string.rest_seconds, index = 0)
     private Integer restSeconds = 0;
 
     // TODO implement properly

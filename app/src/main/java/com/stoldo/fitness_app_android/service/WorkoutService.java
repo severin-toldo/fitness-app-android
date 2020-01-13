@@ -13,8 +13,8 @@ import java.util.List;
 
 @Singleton
 public class WorkoutService extends AbstractSyncService {
-    private WorkoutRepository workoutRepository = (WorkoutRepository) OtherUtil.getSingleton(WorkoutRepository.class);
-    private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingleton(ExerciseService.class);
+    private WorkoutRepository workoutRepository = (WorkoutRepository) OtherUtil.getSingletonInstance(WorkoutRepository.class);
+    private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingletonInstance(ExerciseService.class);
 
     private WorkoutService() {}
 

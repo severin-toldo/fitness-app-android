@@ -18,6 +18,7 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.Observable;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.shared.util.LogUtil;
@@ -100,7 +101,7 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
                 try {
                     clickMethod.invoke(listViewData.getListViewSubscriber(), data.get(position));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LogUtil.logErrorAndExit(ErrorCode.E1000.getErrorMsg(), getClass(), e);
                 }
             });
         }

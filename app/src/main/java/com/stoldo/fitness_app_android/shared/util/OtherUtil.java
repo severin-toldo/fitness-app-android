@@ -17,7 +17,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Class that holds different kind of methods to facilitate different processed throughout the whole application.
+ * A general Util class.
+ * */
 public class OtherUtil {
+    // TODO java doc --> Stefano
     public static int convertDpToPixel(int dp, Context context){
         Resources r = context.getResources();
         return (int) TypedValue.applyDimension(
@@ -27,7 +32,8 @@ public class OtherUtil {
         );
     }
 
-    // TODO unify
+    // TODO unify --> Stefano
+    // TODO java doc --> Stefano
     public static void runSetter(Field field, Object o, Object value) {
         // MZ: Find the correct method
         for (Method method : o.getClass().getMethods()) {
@@ -45,7 +51,8 @@ public class OtherUtil {
         }
     }
 
-    // TODO unify
+    // TODO unify --> Stefano
+    // TODO java doc --> Stefano
     public static Object runGetter(Field field, Object o) {
         // MZ: Find the correct method
         for (Method method : o.getClass().getMethods()) {
@@ -65,24 +72,25 @@ public class OtherUtil {
         return null;
     }
 
+    /**
+     * Checks if a given index is valid with a given list size.
+     *
+     * @param index index to check
+     * @param listSize list size of the used list
+     * @return true if the index is valid, false if the index is invalid
+     * */
     public static boolean isValidIndex(int index, int listSize) {
         return index >= 0 && index < listSize;
     }
 
-    public static Object getSingleton(Class singletonClass) {
-        return SingletonService.getInstance(null).getSingletonByClass(singletonClass);
-    }
-
     /**
-     * Throws passed exception if passed boolean is false
+     * Returns the instance of the desired singleton.
      *
-     * @param b condition, if false error is thrown
-     * @param e exception which should be thrown
+     * @param singletonClass Class of the desired singleton
+     * @return Instance of the desired singleton
      * */
-    public static void falseThenThrow(boolean b, Exception e) throws Exception {
-        if (!b) {
-            throw e; // TODO logging
-        }
+    public static Object getSingletonInstance(Class singletonClass) {
+        return SingletonService.getInstance(null).getSingletonByClass(singletonClass);
     }
 
     /**

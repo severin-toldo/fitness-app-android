@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -22,8 +21,10 @@ import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.SoundService;
 import com.stoldo.fitness_app_android.service.TimerService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,18 +49,16 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
     private boolean playButtonTouched = false;
     private TimeType currentTimeType = defaultTimeType;
 
-    private WorkoutService workoutService = (WorkoutService) OtherUtil.getSingleton(WorkoutService.class);
-    private TimerService timerService = (TimerService) OtherUtil.getSingleton(TimerService.class);
-    private SoundService soundService = (SoundService) OtherUtil.getSingleton(SoundService.class);
+    private WorkoutService workoutService = (WorkoutService) OtherUtil.getSingletonInstance(WorkoutService.class);
+    private TimerService timerService = (TimerService) OtherUtil.getSingletonInstance(TimerService.class);
+    private SoundService soundService = (SoundService) OtherUtil.getSingletonInstance(SoundService.class);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO error handling
         try {
-
             setContentView(R.layout.activity_exercise_start);
             Integer currentExerciseId = getIntent().getIntExtra(IntentParams.EXERCISE_ID.name(), 0);
             exercisesOfWorkout = workoutService.getWorkoutById(getIntent().getIntExtra(IntentParams.WORKOUT_ID.name(), 0)).getExercises();
@@ -74,8 +73,10 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
             setUpViews();
             onExerciseChange(null);
 
+        } catch (SQLException sqle) {
+            LogUtil.logError(sqle.getMessage(), this.getClass(), sqle);
         } catch (Exception e) {
-            Log.d("MYDEBUG", e.getMessage());
+            LogUtil.logErrorAndExit(e.getMessage(), this.getClass(), e);
         }
     }
 
@@ -120,12 +121,7 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         pauseExerciseButton = findViewById(R.id.pauseExerciseButton);
         pauseExerciseButton.setVisibility(View.GONE); // hide on start
         pauseExerciseButton.setOnClickListener((View v) -> {
-            // TODO error handling
-            try {
-                onPauseExercise();
-            } catch (Exception e) {
-                Log.d("MYDEBUG", "Error!" + e.getMessage());
-            }
+            onPauseExercise();
         });
 
         playExerciseButton = findViewById(R.id.playExerciseButton);

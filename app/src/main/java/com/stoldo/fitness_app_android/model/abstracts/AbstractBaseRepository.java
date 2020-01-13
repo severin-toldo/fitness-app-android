@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "fitness_app.db"; // TODO in property or res file
+    public static final String DATABASE_NAME = "fitness_app.db";
 
     private final ConnectionSource CONNECTION_SOURCE;
     private final Class ENTITY_CLASS;
@@ -43,14 +43,6 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
         db.execSQL("DROP TABLE IF EXISTS " + ENTITY_DAO.getTableName());
         onCreate(db);
     }
-
-    // TODO doesnt work --> find a proper way, maybe in activity destroy?
-//    @Override
-//    protected void finalize() throws Throwable {
-//        Log.d("MYDEBUG", "Closing connection?");
-//        CONNECTION_SOURCE.close();
-//        super.finalize();
-//    }
 
     public T save(T entity) throws SQLException {
         if (entity.getId() == null || (entity.getId() != null && getById(entity.getId()) == null)) {
