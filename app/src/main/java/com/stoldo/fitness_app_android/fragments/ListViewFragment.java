@@ -31,7 +31,7 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
 
     private boolean editMode = false;
     private ListView listView;
-    private List<I> editedItems;
+    private List<I> baseItems;
     private Observable observable = new Observable<ActionEvent>();
 
 
@@ -41,6 +41,7 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
 
     public ListViewFragment(ListViewData listViewData) {
         this.listViewData = listViewData;
+        this.baseItems = new ArrayList<>(listViewData.getItems());
         observable.subscribe(this.listViewData.getListViewSubscriber());
     }
 
@@ -113,26 +114,24 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
     // TODO onRemove and add remove badges
     // TODO click on item crashes the app. find out if in edit mode or in normal mode
     private void onEdit() {
-        editedItems = new ArrayList<>(listViewData.getItems());
-        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), ActionType.EDIT);
+        finalizeAction(listViewData.getItems(), listViewData.getEditItemClickMethod(), ActionType.EDIT);
     }
 
     private void onCancel() {
-        editedItems.clear();
-        finalizeAction(listViewData.getItems(), listViewData.getDefaultItemClickMethod(), ActionType.CANCEL);
+        listViewData.setItems(baseItems);
+        finalizeAction(baseItems, listViewData.getDefaultItemClickMethod(), ActionType.CANCEL);
     }
 
     private void onAdd() {
-        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), ActionType.ADD);
+        //editedItems = new ArrayList<>(listViewData.getItems());
+        finalizeAction(listViewData.getItems(), listViewData.getEditItemClickMethod(), ActionType.ADD);
         // TODO somehow make and input output system
         // TODO open add form fragment and append to editedItems.
     }
 
     private void onConfirm() {
-        listViewData.getItems().clear();
-        listViewData.setItems(new ArrayList<>(editedItems));
-        editedItems.clear();
-        finalizeAction(listViewData.getItems(), listViewData.getDefaultItemClickMethod(), ActionType.CONFIRM);
+        baseItems = listViewData.getItems();
+        finalizeAction(baseItems, listViewData.getDefaultItemClickMethod(), ActionType.CONFIRM);
         // save stuff, fragment or activy jursitiction? i think both
     }
 

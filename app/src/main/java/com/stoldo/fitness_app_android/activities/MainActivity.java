@@ -11,6 +11,7 @@ import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.Workout;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
+import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
@@ -48,11 +49,27 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
 
     @Override
     public void update(ActionEvent data) {
-        // TODO what is this used for? -> probably for FromFragment?
+        if(data != null) {
+            if(data.getActionType() == ActionType.ADD){
+                FormFragment formFragment = FormFragment.newInstance(new Workout());
+                formFragment.setSubmitable(this::onSubmit);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.workout_list_container, formFragment)
+                        .commitNow();
+            }
+
+            //workoutListViewFragment.updateItems(this.workouts);
+        }
+
+        // TODO what is this used for? -> probably for FormFragment?
     }
 
     @Override
     public Object onSubmit(Object value) {
+        Workout newWorkout = (Workout)value;
+        if (newWorkout != null && !this.workouts.contains(newWorkout)){
+            this.workouts.add(newWorkout);
+        }
         workoutListViewFragment.updateItems(this.workouts);
         return null;
     }

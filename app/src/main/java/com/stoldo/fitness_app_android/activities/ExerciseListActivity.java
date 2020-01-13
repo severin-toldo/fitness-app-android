@@ -6,13 +6,14 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.stoldo.fitness_app_android.R;
+import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.Exercise;
 import com.stoldo.fitness_app_android.model.ListViewData;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
+import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
-import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.util.ArrayList;
@@ -78,8 +79,8 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     // TODO
     // Hint: Edit click listener should start FormFragment do edit an exercise
     public void editOnExerciseClick(Exercise clickedExercise) {
-//        getSupportFragmentManager().beginTransaction()
-//                .add(R.id.workout_list_container, FormFragment.newInstance(clickedWorkout, this,this))
-//                .commitNow();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.exercise_list_container, FormFragment.newInstance(clickedExercise))
+                .commitNow();
     }
 }

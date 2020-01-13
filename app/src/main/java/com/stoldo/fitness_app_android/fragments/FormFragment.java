@@ -194,6 +194,7 @@ public class FormFragment extends Fragment {
         }
 
         this.submitable.onSubmit(this.fieldInformations);
+        OtherUtil.hideKeyboard(this.getActivity());
 
         closeFragment();
     }
