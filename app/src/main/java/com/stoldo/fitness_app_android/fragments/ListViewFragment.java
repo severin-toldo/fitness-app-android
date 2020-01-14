@@ -33,6 +33,7 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
 
     private boolean editMode = false;
     private ListView listView;
+    //Alle gespeicherten items
     private List<I> baseItems;
     private Observable observable = new Observable<ActionEvent>();
 
@@ -119,7 +120,7 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
     }
 
     private void onCancel() {
-        listViewData.setItems(baseItems);
+        listViewData.setItems(new ArrayList<I>(baseItems));
         finalizeAction(baseItems, listViewData.getDefaultItemClickMethod(), ActionType.CANCEL);
     }
 
@@ -131,14 +132,16 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
     }
 
     private void onConfirm() {
-        baseItems = listViewData.getItems();
+        baseItems = new ArrayList<I>(listViewData.getItems());
         finalizeAction(baseItems, listViewData.getDefaultItemClickMethod(), ActionType.CONFIRM);
         // save stuff, fragment or activy jursitiction? i think both
     }
 
     private void onRemove(int itemIndex) {
-        editedItems.remove(itemIndex);
-        finalizeAction(editedItems, listViewData.getEditItemClickMethod(), ActionType.REMOVE);
+        List<I> items = listViewData.getItems();
+        items.remove(itemIndex);
+        listViewData.setItems(items);
+        finalizeAction(listViewData.getItems(), listViewData.getEditItemClickMethod(), ActionType.REMOVE);
     }
 
     /**

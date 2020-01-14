@@ -54,22 +54,19 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     public void update(ActionEvent data) {
         if(data != null) {
             if(data.getActionType() == ActionType.ADD){
-                FormFragment formFragment = FormFragment.newInstance(new Workout());
+                FormFragment formFragment = FormFragment.newInstance(new WorkoutEntity());
                 formFragment.setSubmitable(this::onSubmit);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.workout_list_container, formFragment)
                         .commitNow();
             }
-
-            //workoutListViewFragment.updateItems(this.workouts);
         }
-
         // TODO what is this used for? -> probably for FormFragment?
     }
 
     @Override
     public Object onSubmit(Object value) {
-        Workout newWorkout = (Workout)value;
+        WorkoutEntity newWorkout = (WorkoutEntity)value;
         if (newWorkout != null && !this.workouts.contains(newWorkout)){
             this.workouts.add(newWorkout);
         }

@@ -8,13 +8,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
-import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.ListViewData;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
+import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
+import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
-import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.shared.util.LogUtil;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
@@ -23,9 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ExerciseListActivity extends AppCompatActivity implements Subscriber<ActionEvent> {
+public class ExerciseListActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
     private List<ExerciseEntity> exercises = new ArrayList<>();
     private Integer workoutId;
+    private ListViewFragment exerciseListViewFragment = null;
+
+    @Override
+    public boolean navigateUpTo(Intent upIntent) {
+        return super.navigateUpTo(upIntent);
+    }
+
     private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingletonInstance(ExerciseService.class);
 
     @Override
@@ -47,21 +55,32 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     }
 
     @Override
-    public void update(ActionEvent actionEvent) {
-        // TODO
+    public void update(ActionEvent data) {
+        if(data != null) {
+            if(data.getActionType() == ActionType.ADD){
+                FormFragment formFragment = FormFragment.newInstance(new ExerciseEntity());
+                formFragment.setSubmitable(this::onSubmit);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.exercise_list_container, formFragment)
+                        .commitNow();
+            }
+        }
     }
 
     private void setUpExerciseListView(Bundle savedInstanceState) throws Exception {
-        ListViewData<ExerciseListActivity, Exercise> listViewData = new ListViewData<>();
+        ListViewData<ExerciseListActivity, ExerciseEntity> listViewData = new ListViewData<>();
         listViewData.setItems(exercises);
         listViewData.setItemLayout(R.layout.exercise_item);
         listViewData.setListViewSubscriber(this);
-        listViewData.setDefaultItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("defaultOnExerciseClick", Exercise.class));
-        listViewData.setEditItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("editOnExerciseClick", Exercise.class));
+        listViewData.setDefaultItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("defaultOnExerciseClick", ExerciseEntity.class));
+        listViewData.setEditItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("editOnExerciseClick", ExerciseEntity.class));
+
+
+        exerciseListViewFragment = ListViewFragment.newInstance(listViewData);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.exercise_list_container, ListViewFragment.newInstance(listViewData))
+                    .add(R.id.exercise_list_container, exerciseListViewFragment)
                     .commitNow();
         }
     }
@@ -79,5 +98,15 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.exercise_list_container, FormFragment.newInstance(clickedExercise))
                 .commitNow();
+    }
+
+    @Override
+    public Object onSubmit(Object value) {
+        ExerciseEntity newExercise = (ExerciseEntity)value;
+        if (newExercise != null && !this.exercises.contains(newExercise)){
+            this.exercises.add(newExercise);
+        }
+        exerciseListViewFragment.updateItems(this.exercises);
+        return null;
     }
 }
