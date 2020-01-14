@@ -2,6 +2,7 @@ package com.stoldo.fitness_app_android.service;
 
 
 import com.stoldo.fitness_app_android.model.Observable;
+import com.stoldo.fitness_app_android.model.abstracts.AbstractAsyncService;
 import com.stoldo.fitness_app_android.model.abstracts.AbstractBaseRunnable;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
@@ -31,13 +32,6 @@ public class TimerService extends AbstractAsyncService<TimerEvent> {
     protected AbstractBaseRunnable getServiceRunnable() {
         return serviceRunnable;
     }
-
-
-
-
-
-
-
 
 
 
@@ -73,6 +67,7 @@ public class TimerService extends AbstractAsyncService<TimerEvent> {
 
             Integer seconds = timerEvent.getSeconds();
 
+            // TODO maybe with do while or duble to save halfe, 0.2, 0.3 etc seconds
             while (seconds != 0 && isRunning()) {
                 timerEvent.setSeconds(seconds);
                 observable.notifySubscribers(timerEvent);

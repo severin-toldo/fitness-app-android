@@ -53,11 +53,7 @@ public class SingletonService {
     }
 
     public Object getSingletonByClass(Class singletonClass) {
-        if (singletonClass.isAnnotationPresent(Singleton.class)) {
-            return singletonObjects.get(singletonClass.getName());
-        } else {
-            throw new IllegalArgumentException("Passed class is not annotated with @Singleton!");
-        }
+        return singletonObjects.get(singletonClass.getName());
     }
 
     /**
@@ -73,24 +69,48 @@ public class SingletonService {
                 String className = classNames.nextElement();
 
                 if (isClassInMyPackage(className)) {
-                    Class<?> clazz = classLoader.loadClass(className);
-
-                    if (clazz.isAnnotationPresent(Singleton.class)) {
-                        Constructor constructor = clazz.getDeclaredConstructor();
-
-                        if (Modifier.isPublic(constructor.getModifiers())) {
-                            throw new InvalidClassException("Annotated Class has a public constructor, is therefore not a singleton!")   ;
-                        }
-
-                        constructor.setAccessible(true);
-                        Object singletonInstance = constructor.newInstance();
-                        singletonObjects.put(clazz.getName(), singletonInstance);
-                    }
+                    Class clazz = classLoader.loadClass(className);
+                    instantiateSingleton(clazz);
                 }
             }
         }
 
         calledTimes++;
+    }
+
+    private void instantiateSingleton(Class clazz) throws Exception {
+        if (clazz.isAnnotationPresent(Singleton.class)) {
+            Constructor constructor = getConstructor(clazz);
+            constructor.setAccessible(true);
+
+            Object singletonInstance = null;
+
+            if (constructor.getParameterCount() == 0) {
+                singletonInstance = constructor.newInstance();
+            } else {
+                singletonInstance = constructor.newInstance(context);
+            }
+
+            singletonObjects.put(clazz.getName(), singletonInstance);
+        }
+    }
+
+    private Constructor getConstructor(Class clazz) throws Exception {
+        Constructor[] constructors = clazz.getDeclaredConstructors();
+
+        if (constructors.length > 1) {
+            throw new IllegalStateException("Annotated Class has multiple constructors!");
+        }
+
+        if (Modifier.isPublic(constructors[0].getModifiers())) {
+            throw new InvalidClassException("Annotated Class has a public constructor, is therefore not a singleton!")   ;
+        }
+
+        if (constructors[0].getParameterCount() > 1) {
+            throw new InvalidClassException("Annotated Class has more than one argument!")   ;
+        }
+
+        return constructors[0];
     }
 
     private boolean isClassInMyPackage(String className) {

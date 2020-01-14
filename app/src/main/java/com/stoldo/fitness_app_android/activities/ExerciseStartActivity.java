@@ -6,13 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.stoldo.fitness_app_android.R;
-import com.stoldo.fitness_app_android.model.Exercise;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.events.SoundEvent;
 import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
@@ -22,8 +21,10 @@ import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.SoundService;
 import com.stoldo.fitness_app_android.service.TimerService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,28 +39,26 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
     private TextView nextExerciseTextView;
     private ConstraintLayout background;
 
-    private List<Exercise> exercisesOfWorkout;
-    private Exercise currentExercise;
+    private List<ExerciseEntity> exercisesOfWorkout;
+    private ExerciseEntity currentExercise;
     private Integer currentExerciseIndex = -1;
-    private Exercise previousExercise;
-    private Exercise nextExercise;
+    private ExerciseEntity previousExercise;
+    private ExerciseEntity nextExerciseEntity;
     private final TimeType defaultTimeType = TimeType.PREPARE;
 
     private boolean playButtonTouched = false;
     private TimeType currentTimeType = defaultTimeType;
 
-    private WorkoutService workoutService = (WorkoutService) OtherUtil.getService(WorkoutService.class);
-    private TimerService timerService = (TimerService) OtherUtil.getService(TimerService.class);
-    private SoundService soundService = (SoundService) OtherUtil.getService(SoundService.class);
+    private WorkoutService workoutService = (WorkoutService) OtherUtil.getSingletonInstance(WorkoutService.class);
+    private TimerService timerService = (TimerService) OtherUtil.getSingletonInstance(TimerService.class);
+    private SoundService soundService = (SoundService) OtherUtil.getSingletonInstance(SoundService.class);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO error handling
         try {
-
             setContentView(R.layout.activity_exercise_start);
             Integer currentExerciseId = getIntent().getIntExtra(IntentParams.EXERCISE_ID.name(), 0);
             exercisesOfWorkout = workoutService.getWorkoutById(getIntent().getIntExtra(IntentParams.WORKOUT_ID.name(), 0)).getExercises();
@@ -74,8 +73,10 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
             setUpViews();
             onExerciseChange(null);
 
+        } catch (SQLException sqle) {
+            LogUtil.logError(sqle.getMessage(), this.getClass(), sqle);
         } catch (Exception e) {
-            Log.d("MYDEBUG", e.getMessage());
+            LogUtil.logErrorAndExit(e.getMessage(), this.getClass(), e);
         }
     }
 
@@ -120,12 +121,7 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         pauseExerciseButton = findViewById(R.id.pauseExerciseButton);
         pauseExerciseButton.setVisibility(View.GONE); // hide on start
         pauseExerciseButton.setOnClickListener((View v) -> {
-            // TODO error handling
-            try {
-                onPauseExercise();
-            } catch (Exception e) {
-                Log.d("MYDEBUG", "Error!" + e.getMessage());
-            }
+            onPauseExercise();
         });
 
         playExerciseButton = findViewById(R.id.playExerciseButton);
@@ -179,11 +175,11 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         // update exercises
         currentExercise = getExerciseByIndex(currentExerciseIndex);
         previousExercise = getExerciseByIndex(currentExerciseIndex - 1);
-        nextExercise = getExerciseByIndex(currentExerciseIndex + 1);
+        nextExerciseEntity = getExerciseByIndex(currentExerciseIndex + 1);
 
         // update ui
         remainingSecondsTextView.setText(currentExercise.getPrepareSeconds().toString());
-        nextExerciseTextView.setText(nextExercise.getTitle());
+        nextExerciseTextView.setText(nextExerciseEntity.getTitle());
         changeBackgroundColorByTimeType(defaultTimeType);
 
         if (action == ActionType.NEXT || action == ActionType.PREVIOUS) {
@@ -198,7 +194,7 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         timerService.startService(Arrays.asList(prepareEvent, workEvent, restEvent));
     }
 
-    private Exercise getExerciseByIndex(Integer index) {
+    private ExerciseEntity getExerciseByIndex(Integer index) {
         if (OtherUtil.isValidIndex(index, exercisesOfWorkout.size())) {
             return exercisesOfWorkout.get(index);
         }

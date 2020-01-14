@@ -1,4 +1,4 @@
-package com.stoldo.fitness_app_android.model;
+package com.stoldo.fitness_app_android.model.data;
 
 
 import androidx.annotation.LayoutRes;

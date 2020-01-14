@@ -23,6 +23,15 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/black" />
 
-
+    <TextView
+            android:id="@+id/removeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="-"
+            android:textSize="50dp"
+            android:textStyle="bold" />
 </RelativeLayout>
 

@@ -1,16 +1,12 @@
 package com.stoldo.fitness_app_android.service;
 
 
-import android.content.Context;
 import android.media.MediaPlayer;
 
-import androidx.annotation.RawRes;
-
-import com.stoldo.fitness_app_android.model.Observable;
+import com.stoldo.fitness_app_android.model.abstracts.AbstractAsyncService;
 import com.stoldo.fitness_app_android.model.abstracts.AbstractBaseRunnable;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 import com.stoldo.fitness_app_android.model.data.events.SoundEvent;
-import com.stoldo.fitness_app_android.model.data.events.TimerEvent;
 
 import java.util.List;
 
@@ -29,15 +25,6 @@ public class SoundService extends AbstractAsyncService<SoundEvent> {
     protected AbstractBaseRunnable getServiceRunnable() {
         return serviceRunnable;
     }
-
-
-
-
-
-
-
-
-
 
     /**
      *

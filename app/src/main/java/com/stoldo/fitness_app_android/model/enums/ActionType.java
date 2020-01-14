@@ -6,5 +6,6 @@ public enum ActionType {
     ADD,
     CONFIRM,
     PREVIOUS,
-    NEXT;
+    NEXT,
+    REMOVE;
 }

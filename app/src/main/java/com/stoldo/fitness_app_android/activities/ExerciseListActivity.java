@@ -8,22 +8,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
-import com.stoldo.fitness_app_android.model.Exercise;
-import com.stoldo.fitness_app_android.model.ListViewData;
+import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
+import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
+import com.stoldo.fitness_app_android.model.enums.IntentParams;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ExerciseListActivity extends AppCompatActivity implements Subscriber<ActionEvent> {
-    private List<Exercise> exercises = new ArrayList<>();
+    private List<ExerciseEntity> exercises = new ArrayList<>();
     private Integer workoutId;
-    private ExerciseService exerciseService = (ExerciseService) OtherUtil.getService(ExerciseService.class);
+    private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingletonInstance(ExerciseService.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +34,15 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
         setContentView(R.layout.activity_exercise_list);
         setTitle(R.string.activity_exercise_list);
 
-        // TODO proper error handling
         try {
             Integer workoutId = getIntent().getIntExtra(IntentParams.WORKOUT_ID.name(), 0);
             this.workoutId = workoutId;
             exercises = exerciseService.getExercisesByWorkoutId(workoutId);
-
             setUpExerciseListView(savedInstanceState);
+        } catch (SQLException sqle) {
+            LogUtil.logError(sqle.getMessage(), this.getClass(), sqle);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.logErrorAndExit(e.getMessage(), this.getClass(), e);
         }
     }
 
@@ -63,22 +66,16 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
         }
     }
 
-    public void defaultOnExerciseClick(Exercise clickedExercise) {
-        // TODO error handling
-        try {
-            Intent intent = new Intent(ExerciseListActivity.this, ExerciseStartActivity.class);
-            intent.putExtra(IntentParams.EXERCISE_ID.name(), clickedExercise.getId());
-            intent.putExtra(IntentParams.WORKOUT_ID.name(), workoutId);
-            startActivity(intent);
-        } catch (Exception e) {
-            // TODO notify parent or fragment
-            e.printStackTrace();
-        }
+    public void defaultOnExerciseClick(ExerciseEntity clickedExercise) {
+        Intent intent = new Intent(ExerciseListActivity.this, ExerciseStartActivity.class);
+        intent.putExtra(IntentParams.EXERCISE_ID.name(), clickedExercise.getId());
+        intent.putExtra(IntentParams.WORKOUT_ID.name(), workoutId);
+        startActivity(intent);
     }
 
-    // TODO
+    // TODO implement --> Stefano
     // Hint: Edit click listener should start FormFragment do edit an exercise
-    public void editOnExerciseClick(Exercise clickedExercise) {
+    public void editOnExerciseClick(ExerciseEntity clickedExercise) {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.exercise_list_container, FormFragment.newInstance(clickedExercise))
                 .commitNow();
