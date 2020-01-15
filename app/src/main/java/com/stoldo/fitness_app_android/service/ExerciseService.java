@@ -30,6 +30,7 @@ public class ExerciseService extends AbstractSyncService {
         return exerciseRepository.save(exercise);
     }
 
+    // SAVE CAN LEAD TO TROUBLE IF YOU REMOVE ITEMS!! --> first delete all exerciises with wprkout id then save new ones or something- fuck
     public List<ExerciseEntity> saveExercises(List<ExerciseEntity> exercises) throws SQLException {
         List<ExerciseEntity> savedExercises = new ArrayList<>();
 
