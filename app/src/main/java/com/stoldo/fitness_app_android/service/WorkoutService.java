@@ -5,7 +5,6 @@ import com.stoldo.fitness_app_android.model.abstracts.AbstractSyncService;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.repository.WorkoutRepository;
-import com.stoldo.fitness_app_android.shared.util.LogUtil;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.sql.SQLException;
@@ -23,7 +22,6 @@ public class WorkoutService extends AbstractSyncService {
         List<WorkoutEntity> workouts = workoutRepository.findAll();
 
         for (WorkoutEntity workout : workouts) {
-            LogUtil.logMyDebug(getClass(), "Found workout: " + workout.getId() + workout.getTitle());
             workout.setExercises(exerciseService.getExercisesByWorkoutId(workout.getId()));
         }
 
@@ -42,6 +40,7 @@ public class WorkoutService extends AbstractSyncService {
     }
 
     public List<WorkoutEntity> saveWorkouts(List<WorkoutEntity> workouts) throws SQLException {
+        workoutRepository.flushTable(); // without this, deleted items stay in the db
         List<WorkoutEntity> savedWorkouts = new ArrayList<>();
 
         for (WorkoutEntity workout : workouts) {

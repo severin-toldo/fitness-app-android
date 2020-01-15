@@ -12,12 +12,14 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.SingletonService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
 import com.stoldo.fitness_app_android.shared.util.LogUtil;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -52,23 +54,25 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
 
     @Override
     public void update(ActionEvent data) {
-        if(data != null) {
-            ActionType Atype = data.getActionType();
-            if(Atype == ActionType.ADD){
-                FormFragment formFragment = FormFragment.newInstance(new WorkoutEntity());
-                formFragment.setSubmitable(this::onSubmit);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.workout_list_container, formFragment)
-                        .commitNow();
-            } else if(Atype == ActionType.CONFIRM){
-                try {
-                    workoutService.saveWorkouts(workouts);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        if (data != null) {
+            switch (data.getActionType()) {
+                case ADD:
+                    setUpEditForm();
+                    break;
+                case CONFIRM:
+                    saveWorkouts();
+                    break;
             }
         }
-        // TODO what is this used for? -> probably for FormFragment?
+    }
+
+    private void saveWorkouts() {
+        try {
+            workoutService.saveWorkouts(workoutListViewFragment.getBaseItems());
+        } catch (SQLException e) {
+            LogUtil.logError(ErrorCode.E1008.getErrorMsg(), getClass(), e);
+            OtherUtil.popToast(this, ErrorCode.E1008.getErrorMsg());
+        }
     }
 
     @Override
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
                 .commitNow();
     }
 
+    // TODO make generic if possible
     private void setUpWorkoutListView(Bundle savedInstanceState) throws Exception {
         ListViewData<MainActivity, WorkoutEntity> listViewData = new ListViewData<>();
         listViewData.setItems(workouts);
@@ -110,5 +115,14 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
                     .add(R.id.workout_list_container, workoutListViewFragment)
                     .commitNow();
         }
+    }
+
+    // TODO make generic
+    private void setUpEditForm() {
+        FormFragment formFragment = FormFragment.newInstance(new WorkoutEntity());
+        formFragment.setSubmitable(this::onSubmit);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.workout_list_container, formFragment)
+                .commitNow();
     }
 }
