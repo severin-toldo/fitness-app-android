@@ -12,14 +12,12 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
-import com.stoldo.fitness_app_android.model.enums.ErrorCode;
+import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.service.SingletonService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
 import com.stoldo.fitness_app_android.shared.util.LogUtil;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,12 +53,19 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     @Override
     public void update(ActionEvent data) {
         if(data != null) {
-            if(data.getActionType() == ActionType.ADD){
+            ActionType Atype = data.getActionType();
+            if(Atype == ActionType.ADD){
                 FormFragment formFragment = FormFragment.newInstance(new WorkoutEntity());
                 formFragment.setSubmitable(this::onSubmit);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.workout_list_container, formFragment)
                         .commitNow();
+            } else if(Atype == ActionType.CONFIRM){
+                try {
+                    workoutService.saveWorkouts(workouts);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
         // TODO what is this used for? -> probably for FormFragment?

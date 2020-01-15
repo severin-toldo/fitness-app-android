@@ -12,7 +12,6 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
-import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
@@ -59,12 +58,19 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     @Override
     public void update(ActionEvent data) {
         if(data != null) {
-            if(data.getActionType() == ActionType.ADD){
+            ActionType Atype = data.getActionType();
+            if(Atype == ActionType.ADD){
                 FormFragment formFragment = FormFragment.newInstance(new ExerciseEntity());
                 formFragment.setSubmitable(this::onSubmit);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.exercise_list_container, formFragment)
                         .commitNow();
+            }else if(Atype == ActionType.CONFIRM){
+                try {
+                    exerciseService.saveExercises(exercises);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -104,15 +110,10 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
 
     @Override
     public Object onSubmit(Object value) {
-        try {
             ExerciseEntity newExercise = (ExerciseEntity)value;
             if (newExercise != null && !this.exercises.contains(newExercise)){
                 this.exercises.add(newExercise);
-            }
-        }catch (SQLException e){
-            LogUtil.logError(ErrorCode.E1008.getErrorMsg(), getClass(), e);
-            OtherUtil.popToast(this, ErrorCode.E1008.getErrorMsg());
-        }
+           }
         exerciseListViewFragment.updateItems(this.exercises);
         return null;
     }
