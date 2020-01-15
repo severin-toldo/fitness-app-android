@@ -65,6 +65,8 @@ public class ExerciseEntity implements ListItem, Entity {
 
     /**
      * Not null constrcutor. Id is not null, but is not something you "know" when instantiating the object. The id is set when saving to db.
+     *
+     * @param workoutId a workout id is always needed to enusure the composition
      * */
     public ExerciseEntity(Integer workoutId, String title, Integer seconds) {
         this.workoutId = workoutId;

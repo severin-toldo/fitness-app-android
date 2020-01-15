@@ -12,12 +12,14 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.service.SingletonService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
 import com.stoldo.fitness_app_android.shared.util.LogUtil;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
     private List<WorkoutEntity> workouts = new ArrayList<>();
-    ListViewFragment workoutListViewFragment = null;
+    private ListViewFragment workoutListViewFragment = null;
     private WorkoutService workoutService = null;
 
     @Override

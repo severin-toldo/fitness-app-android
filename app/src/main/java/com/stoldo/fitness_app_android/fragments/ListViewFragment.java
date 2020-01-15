@@ -124,11 +124,10 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
         finalizeAction(baseItems, listViewData.getDefaultItemClickMethod(), ActionType.CANCEL);
     }
 
+    // TODO rework
     private void onAdd() {
         //editedItems = new ArrayList<>(listViewData.getItems());
         finalizeAction(listViewData.getItems(), listViewData.getEditItemClickMethod(), ActionType.ADD);
-        // TODO somehow make and input output system
-        // TODO open add form fragment and append to editedItems.
     }
 
     private void onConfirm() {

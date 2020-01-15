@@ -14,7 +14,8 @@ public enum ErrorCode {
     E1004("Failed deleting entity {0}"),
     E1005("Failed inserting entity {0}"),
     E1006("Failed initializing Repository"),
-    E1007("Failed updating entity {0}");
+    E1007("Failed updating entity {0}"),
+    E1008("Error during saving! ");
 
     @Getter
     private String errorMsg;

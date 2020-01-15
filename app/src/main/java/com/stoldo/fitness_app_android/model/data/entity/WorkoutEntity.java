@@ -24,7 +24,7 @@ public class WorkoutEntity implements ListItem, Entity {
     private String title;
 
     @DatabaseField(columnName = "description")
-    @FormField(type = FormFieldType.TEXTFIELD, labelResRef = R.string.description, index = 0)
+    @FormField(type = FormFieldType.TEXTFIELD, labelResRef = R.string.description, index = 1)
     private String description = "";
 
     private List<ExerciseEntity> exercises = new ArrayList<>();

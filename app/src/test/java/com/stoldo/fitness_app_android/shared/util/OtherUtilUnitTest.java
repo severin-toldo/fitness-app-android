@@ -7,7 +7,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-
+// TODO try mocking context again and test dp to pixel etc.
+// TODO also test the own exception
+// TODO evtl repo testing with mocking and then return?
 public class OtherUtilUnitTest extends BaseUnitTest {
     @Test
     public void isValidIndexTest() {

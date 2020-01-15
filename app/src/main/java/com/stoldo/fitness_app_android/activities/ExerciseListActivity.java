@@ -12,6 +12,7 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
@@ -35,6 +36,7 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     }
 
     private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingletonInstance(ExerciseService.class);
+    private ListViewFragment exerciselistViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,9 +104,14 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
 
     @Override
     public Object onSubmit(Object value) {
-        ExerciseEntity newExercise = (ExerciseEntity)value;
-        if (newExercise != null && !this.exercises.contains(newExercise)){
-            this.exercises.add(newExercise);
+        try {
+            ExerciseEntity newExercise = (ExerciseEntity)value;
+            if (newExercise != null && !this.exercises.contains(newExercise)){
+                this.exercises.add(newExercise);
+            }
+        }catch (SQLException e){
+            LogUtil.logError(ErrorCode.E1008.getErrorMsg(), getClass(), e);
+            OtherUtil.popToast(this, ErrorCode.E1008.getErrorMsg());
         }
         exerciseListViewFragment.updateItems(this.exercises);
         return null;
