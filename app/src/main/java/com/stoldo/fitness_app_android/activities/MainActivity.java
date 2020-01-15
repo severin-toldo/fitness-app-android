@@ -12,12 +12,14 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.service.SingletonService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
 import com.stoldo.fitness_app_android.shared.util.LogUtil;
+import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,7 +27,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
     private List<WorkoutEntity> workouts = new ArrayList<>();
-    ListViewFragment workoutListViewFragment = null;
+    private ListViewFragment workoutListViewFragment = null;
     private WorkoutService workoutService = null;
 
     @Override
@@ -54,26 +56,32 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     public void update(ActionEvent data) {
         if(data != null) {
             if(data.getActionType() == ActionType.ADD){
-                FormFragment formFragment = FormFragment.newInstance(new Workout());
+                FormFragment formFragment = FormFragment.newInstance(new WorkoutEntity());
                 formFragment.setSubmitable(this::onSubmit);
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.workout_list_container, formFragment)
                         .commitNow();
             }
-
-            //workoutListViewFragment.updateItems(this.workouts);
         }
-
-        // TODO what is this used for? -> probably for FormFragment?
     }
 
     @Override
     public Object onSubmit(Object value) {
-        Workout newWorkout = (Workout)value;
-        if (newWorkout != null && !this.workouts.contains(newWorkout)){
-            this.workouts.add(newWorkout);
+        try {
+            WorkoutEntity newWorkout = (WorkoutEntity) value;
+
+            if (newWorkout != null && !this.workouts.contains(newWorkout)){
+                this.workouts.add(newWorkout);
+            }
+
+            // first save, then update ui
+            workoutService.saveWorkouts(workouts);
+            workoutListViewFragment.updateItems(this.workouts);
+        } catch (SQLException e) {
+            LogUtil.logError(ErrorCode.E1008.getErrorMsg(), getClass(), e);
+            OtherUtil.popToast(this, ErrorCode.E1008.getErrorMsg());
         }
-        workoutListViewFragment.updateItems(this.workouts);
+
         return null;
     }
 

@@ -3,12 +3,13 @@ package com.stoldo.fitness_app_android.service;
 
 import com.stoldo.fitness_app_android.model.abstracts.AbstractSyncService;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
-import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.repository.WorkoutRepository;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -22,14 +23,8 @@ public class WorkoutService extends AbstractSyncService {
         List<WorkoutEntity> workouts = workoutRepository.findAll();
 
         for (WorkoutEntity workout : workouts) {
+            LogUtil.logMyDebug(getClass(), "Found workout: " + workout.getId() + workout.getTitle());
             workout.setExercises(exerciseService.getExercisesByWorkoutId(workout.getId()));
-        }
-
-        // TODO remove
-        for (int i = 0; i < 10; i++) {
-            WorkoutEntity workoutEntity = new WorkoutEntity("Workout " + i);
-            workoutEntity.setId(i + 10);
-            workouts.add(workoutEntity);
         }
 
         return workouts;
@@ -42,10 +37,17 @@ public class WorkoutService extends AbstractSyncService {
     }
 
     public WorkoutEntity saveWorkout(WorkoutEntity workout) throws SQLException {
-        for (ExerciseEntity exercise : workout.getExercises()) {
-            exerciseService.saveExercise(exercise);
+        exerciseService.saveExercises(workout.getExercises());
+        return workoutRepository.save(workout);
+    }
+
+    public List<WorkoutEntity> saveWorkouts(List<WorkoutEntity> workouts) throws SQLException {
+        List<WorkoutEntity> savedWorkouts = new ArrayList<>();
+
+        for (WorkoutEntity workout : workouts) {
+            savedWorkouts.add(saveWorkout(workout));
         }
 
-        return workoutRepository.save(workout);
+        return savedWorkouts;
     }
 }

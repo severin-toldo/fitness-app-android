@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.stoldo.fitness_app_android.model.SQLSaveException;
 import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.Entity;
 
@@ -19,8 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "fitness_app.db";
-
+    private static final String DATABASE_NAME = "fitness_app.db";
     private final ConnectionSource CONNECTION_SOURCE;
     private final Class ENTITY_CLASS;
     private final Dao<T, Integer> ENTITY_DAO;
@@ -105,7 +105,7 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
      * */
     private T insert(T entity) throws SQLException {
         if (ENTITY_DAO.create(entity) != 1) {
-            throw new SQLException(ErrorCode.E1005.getErrorMsg(entity.toString()));
+            throw new SQLSaveException(ErrorCode.E1005.getErrorMsg(entity.toString()), entity);
         }
 
         return ENTITY_DAO.queryForId(getLastSavedId());
@@ -120,7 +120,7 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
      * */
     private T update(T entity) throws SQLException {
         if (ENTITY_DAO.update(entity) != 1) {
-            throw new SQLException(ErrorCode.E1007.getErrorMsg(entity.toString()));
+            throw new SQLSaveException(ErrorCode.E1007.getErrorMsg(entity.toString()), entity);
         }
 
         return ENTITY_DAO.queryForId(entity.getId());

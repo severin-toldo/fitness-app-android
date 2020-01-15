@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
@@ -36,6 +37,7 @@ public class OtherUtil {
 
     // TODO unify --> Stefano
     // TODO java doc --> Stefano
+    // TODO unit test --> Stefano
     public static void runSetter(Field field, Object o, Object value) {
         // MZ: Find the correct method
         for (Method method : o.getClass().getMethods()) {
@@ -55,6 +57,7 @@ public class OtherUtil {
 
     // TODO unify --> Stefano
     // TODO java doc --> Stefano
+    // TODO unit test --> Stefano
     public static Object runGetter(Field field, Object o) {
         // MZ: Find the correct method
         for (Method method : o.getClass().getMethods()) {
@@ -108,7 +111,17 @@ public class OtherUtil {
         window.setStatusBarColor(ContextCompat.getColor(activity, color));
     }
 
+    /**
+     * Pops a toaster in the given activity with the given message.
+     *
+     * @param activity Activity in which to pop the toaster
+     * @param message Message to display
+     * */
+    public static void popToast(Activity activity, String message) {
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+    }
 
+    // TODO javadoc --> Stefano
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.

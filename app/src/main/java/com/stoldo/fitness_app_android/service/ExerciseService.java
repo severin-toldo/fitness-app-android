@@ -8,6 +8,7 @@ import com.stoldo.fitness_app_android.repository.ExerciseRepository;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,5 +28,15 @@ public class ExerciseService extends AbstractSyncService {
 
     public ExerciseEntity saveExercise(ExerciseEntity exercise) throws SQLException {
         return exerciseRepository.save(exercise);
+    }
+
+    public List<ExerciseEntity> saveExercises(List<ExerciseEntity> exercises) throws SQLException {
+        List<ExerciseEntity> savedExercises = new ArrayList<>();
+
+        for (ExerciseEntity exercise : exercises) {
+            savedExercises.add(saveExercise(exercise));
+        }
+
+        return savedExercises;
     }
 }
