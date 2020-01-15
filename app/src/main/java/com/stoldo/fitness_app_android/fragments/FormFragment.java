@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +23,7 @@ import com.stoldo.fitness_app_android.model.Tuple;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
 import com.stoldo.fitness_app_android.shared.util.OtherUtil;
 
 import org.apache.commons.lang3.NotImplementedException;
@@ -93,7 +93,8 @@ public class FormFragment extends Fragment {
                 if(fieldType != null){
                     TextView label = new TextView(context);
                     // TODO get label text view getRessource() from annotation --> Stefano
-                    label.setText(field.getName());
+                    String labelValue = getResources().getString(formfield.labelResRef());
+                    label.setText(labelValue);
                     label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                     EditText view = null;
                     switch (fieldType){
@@ -113,12 +114,18 @@ public class FormFragment extends Fragment {
                             break;
                     }
 
-                    view.setText((String)OtherUtil.runGetter(field, this.fieldInformations));
-                    // TODO order by index --> get from annotaiomn --> Stefano
+                    Object fieldValue = OtherUtil.runGetter(field, this.fieldInformations);
+                    if(fieldValue != null) {
+                        view.setText(fieldValue.toString());
+                    }
+
+                    //labelWithView.put(new Tuple<>(field.getName(), formfield.index()), new Tuple<>(label, view));
                     labelWithView.put(field.getName(), new Tuple<>(label, view));
                 }
             }
         }
+        // TODO order by index --> get from annotaiomn --> Stefano
+        //labelWithView.
     }
 
     private LinearLayout createSubmitAndCancelButton(){
@@ -189,11 +196,15 @@ public class FormFragment extends Fragment {
 
     public void onSubmit(View v) {
         if(this.submitable == null){
+            LogUtil.logError("Die Methode onSubmit muss überschrienen werden mit setSubmitable" , this.getClass(), new NotImplementedException("Diese Methode muss überschrieben werden."));
             throw new NotImplementedException("Diese Methode muss überschrieben werden.");
         }
         for (Field field : this.getAnotatedFields()) {
-            String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
-            OtherUtil.runSetter(field, this.fieldInformations, text);
+            if(labelWithView.get(field.getName()) != null) {
+                String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
+                OtherUtil.runSetter(field, this.fieldInformations, text);
+            }
+
         }
 
         this.submitable.onSubmit(this.fieldInformations);
@@ -206,25 +217,7 @@ public class FormFragment extends Fragment {
         closeFragment();
     }
 
-    // TODO please remove this xD --> Stefano
     public void onClickOutSide(View v) {
-        cancelCount++;
-        switch (cancelCount){
-            case 1:
-                Toast.makeText(getActivity(), "Wenn Sie raus wollen nochmals klicken!", Toast.LENGTH_LONG).show();
-                break;
-            case 2:
-                Toast.makeText(getActivity(), "Bitte nochmals klicken!", Toast.LENGTH_LONG).show();
-                break;
-            case 3:
-                Toast.makeText(getActivity(), "Nur noch ein mal!", Toast.LENGTH_LONG).show();
-                break;
-            case 4:
-                Toast.makeText(getActivity(), "Scherz ab jetzt noch einmal", Toast.LENGTH_LONG).show();
-                break;
-            case 5:
-                closeFragment();
-                break;
-        }
+        closeFragment();
     }
 }

@@ -63,25 +63,16 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
                         .commitNow();
             }
         }
+        // TODO what is this used for? -> probably for FormFragment?
     }
 
     @Override
     public Object onSubmit(Object value) {
-        try {
-            WorkoutEntity newWorkout = (WorkoutEntity) value;
-
-            if (newWorkout != null && !this.workouts.contains(newWorkout)){
-                this.workouts.add(newWorkout);
-            }
-
-            // first save, then update ui
-            workoutService.saveWorkouts(workouts);
-            workoutListViewFragment.updateItems(this.workouts);
-        } catch (SQLException e) {
-            LogUtil.logError(ErrorCode.E1008.getErrorMsg(), getClass(), e);
-            OtherUtil.popToast(this, ErrorCode.E1008.getErrorMsg());
+        WorkoutEntity newWorkout = (WorkoutEntity)value;
+        if (newWorkout != null && !this.workouts.contains(newWorkout)){
+            this.workouts.add(newWorkout);
         }
-
+        workoutListViewFragment.updateItems(this.workouts);
         return null;
     }
 
