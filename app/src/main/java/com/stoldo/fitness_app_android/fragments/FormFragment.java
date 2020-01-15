@@ -40,7 +40,7 @@ public class FormFragment extends Fragment {
 
     //private FormViewModel mViewModel;
     private Object fieldInformations = null;
-    private HashMap<Tuple<String, Integer>, Tuple<TextView, View>> labelWithView = new HashMap<>();
+    private HashMap<String, Tuple<TextView, View>> labelWithView = new HashMap<>();
     private int cancelCount = 0;
 
     @Setter
@@ -69,7 +69,7 @@ public class FormFragment extends Fragment {
         LayoutParams labelParams = getLabelParams();
         LayoutParams viewParams = getViewParams();
 
-        for (Map.Entry<Tuple<String, Integer>, Tuple<TextView, View>> nameView : labelWithView.entrySet()){
+        for (Map.Entry<String, Tuple<TextView, View>> nameView : labelWithView.entrySet()){
             Tuple<TextView, View> labelAndView = nameView.getValue();
             TextView label = labelAndView.getKey();
             View view = labelAndView.getValue();
@@ -119,7 +119,8 @@ public class FormFragment extends Fragment {
                         view.setText(fieldValue.toString());
                     }
 
-                    labelWithView.put(new Tuple<>(field.getName(), formfield.index()), new Tuple<>(label, view));
+                    //labelWithView.put(new Tuple<>(field.getName(), formfield.index()), new Tuple<>(label, view));
+                    labelWithView.put(field.getName(), new Tuple<>(label, view));
                 }
             }
         }
@@ -199,8 +200,11 @@ public class FormFragment extends Fragment {
             throw new NotImplementedException("Diese Methode muss überschrieben werden.");
         }
         for (Field field : this.getAnotatedFields()) {
-            String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
-            OtherUtil.runSetter(field, this.fieldInformations, text);
+            if(labelWithView.get(field.getName()) != null) {
+                String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
+                OtherUtil.runSetter(field, this.fieldInformations, text);
+            }
+
         }
 
         this.submitable.onSubmit(this.fieldInformations);

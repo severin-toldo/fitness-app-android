@@ -15,6 +15,9 @@ import androidx.core.content.ContextCompat;
 
 import com.stoldo.fitness_app_android.service.SingletonService;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -43,9 +46,31 @@ public class OtherUtil {
                 if (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) {
                     // MZ: Method found, run it
                     try {
+                        Class parType = field.getType();
+                        if(value.getClass() != parType){
+                            if(StringUtils.isEmpty(value.toString())){
+                                //TODO: könnte besser sein
+                                if(parType == Integer.class){
+                                    value = 0;
+                                }
+                                //else....
+                            }else {
+                                Constructor convertConstructor = parType.getConstructor(String.class);
+                                value = convertConstructor.newInstance(value);
+                            }
+
+                        }
+
                         method.invoke(o, value);
+
+                        return;
+
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         Log.e("OtherUtil", "Could not determine method: " + method.getName());
+                    } catch (NoSuchMethodException e) {
+                        Log.e("OtherUtil", "Could not determine constructor of target Class to Convert: " + method.getName());
+                    } catch (InstantiationException e) {
+                        Log.e("OtherUtil", "target Class has no Constructor to Convert: " + method.getName());
                     }
 
                 }
