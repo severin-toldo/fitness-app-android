@@ -27,15 +27,18 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+
 
 public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListItem> extends Fragment implements Subscriber<ActionEvent> {
     private ListViewData<S, I> listViewData;
 
     private boolean editMode = false;
     private ListView listView;
-    //Alle gespeicherten items
-    private List<I> baseItems;
     private Observable observable = new Observable<ActionEvent>();
+
+    @Getter
+    private List<I> baseItems; // Alle gespeicherten items
 
 
     public static ListViewFragment newInstance(@lombok.NonNull ListViewData listViewData) {
@@ -109,6 +112,7 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
         }
     }
 
+    // TODO tahts why after an add the click handlers dont work anymore
     public void updateItems(List<I> data){
         CustomListViewAdapter<I> customListViewAdapter = new CustomListViewAdapter<>(data, listViewData.getItemLayout(), getActivity().getApplicationContext(), this, editMode);
         listView = getView().findViewById(R.id.element_list_list_view);

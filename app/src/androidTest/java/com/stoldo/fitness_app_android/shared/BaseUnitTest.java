@@ -1,4 +1,4 @@
-package com.stoldo.fitness_app_android;
+package com.stoldo.fitness_app_android.shared;
 
 import org.junit.Before;
 

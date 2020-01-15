@@ -13,6 +13,7 @@ import com.j256.ormlite.table.TableUtils;
 import com.stoldo.fitness_app_android.model.SQLSaveException;
 import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.Entity;
+import com.stoldo.fitness_app_android.shared.util.LogUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,6 +59,15 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
 
     public List<T> findAll() throws SQLException {
         return ENTITY_DAO.queryForAll();
+    }
+
+    /**
+     * Deletes all entries from a table
+     *
+     * @throws SQLException when flushing fails
+     * */
+    public void flushTable() throws SQLException {
+        ENTITY_DAO.executeRawNoArgs("DELETE FROM " + ENTITY_DAO.getTableName());
     }
 
     /**
@@ -124,5 +134,14 @@ public abstract class AbstractBaseRepository<T extends Entity> extends SQLiteOpe
         }
 
         return ENTITY_DAO.queryForId(entity.getId());
+    }
+
+    /**
+     * Drops Table of that entitiy
+     *
+     * @throws SQLException when dropping fails
+     * */
+    private void dropTable() throws SQLException {
+        ENTITY_DAO.executeRawNoArgs("DROP TABLE IF EXISTS " + ENTITY_DAO.getTableName());
     }
 }

@@ -11,6 +11,7 @@ import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import lombok.NoArgsConstructor;
 
 // TODO set index correctly
+// TODO field not nulls
 @lombok.Getter
 @lombok.Setter
 @NoArgsConstructor
@@ -19,18 +20,21 @@ public class ExerciseEntity implements ListItem, Entity {
     @DatabaseField(columnName = "id", generatedId = true, canBeNull = false, unique = true)
     protected Integer id;
 
-    @DatabaseField(columnName = "workout_id", canBeNull = false)
+//    @DatabaseField(columnName = "workout_id", canBeNull = false)
+    @DatabaseField(columnName = "workout_id")
     protected Integer workoutId;
 
     @DatabaseField(columnName = "prepare_seconds")
     @FormField(type = FormFieldType.NUMBERFIELD, labelResRef = R.string.prepare_seconds, index = 0)
     private Integer prepareSeconds = 0;
 
-    @DatabaseField(columnName = "title", canBeNull = false)
+//    @DatabaseField(columnName = "title", canBeNull = false)
+    @DatabaseField(columnName = "title")
     @FormField(type = FormFieldType.TEXTFIELD, labelResRef = R.string.title, index = 0)
     private String title;
 
-    @DatabaseField(columnName = "seconds", canBeNull = false)
+//    @DatabaseField(columnName = "seconds", canBeNull = false)
+    @DatabaseField(columnName = "seconds")
     @FormField(type = FormFieldType.NUMBERFIELD, labelResRef = R.string.seconds, index = 0)
     private Integer seconds;
 

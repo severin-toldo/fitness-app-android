@@ -17,8 +17,11 @@ public enum ErrorCode {
     E1007("Failed updating entity {0}"),
     E1008("Error during saving! ");
 
-    @Getter
     private String errorMsg;
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
 
     public String getErrorMsg(String... arguments) {
         return MessageFormat.format(errorMsg, arguments);

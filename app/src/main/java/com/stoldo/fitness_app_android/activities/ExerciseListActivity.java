@@ -12,6 +12,7 @@ import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
+import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
@@ -57,24 +58,30 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
 
     @Override
     public void update(ActionEvent data) {
-        if(data != null) {
-            ActionType Atype = data.getActionType();
-            if(Atype == ActionType.ADD){
-                FormFragment formFragment = FormFragment.newInstance(new ExerciseEntity());
-                formFragment.setSubmitable(this::onSubmit);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.exercise_list_container, formFragment)
-                        .commitNow();
-            }else if(Atype == ActionType.CONFIRM){
-                try {
-                    exerciseService.saveExercises(exercises);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+        if (data != null) {
+            switch (data.getActionType()) {
+                case ADD:
+                    setUpEditForm();
+                    break;
+                case CONFIRM:
+                    saveExercises();
+                    break;
             }
         }
     }
 
+    private void saveExercises() {
+        try {
+            List<ExerciseEntity> exercisesToSave = exerciseListViewFragment.getBaseItems();
+            exercisesToSave.forEach(e -> e.setWorkoutId(workoutId));
+            exerciseService.saveExercises(exercisesToSave);
+        } catch (SQLException e) {
+            LogUtil.logError(ErrorCode.E1008.getErrorMsg(), getClass(), e);
+            OtherUtil.popToast(this, ErrorCode.E1008.getErrorMsg());
+        }
+    }
+
+    // TODO make generic if possible
     private void setUpExerciseListView(Bundle savedInstanceState) throws Exception {
         ListViewData<ExerciseListActivity, ExerciseEntity> listViewData = new ListViewData<>();
         listViewData.setItems(exercises);
@@ -91,6 +98,15 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
                     .add(R.id.exercise_list_container, exerciseListViewFragment)
                     .commitNow();
         }
+    }
+
+    // TODO make generic
+    private void setUpEditForm() {
+        FormFragment formFragment = FormFragment.newInstance(new ExerciseEntity());
+        formFragment.setSubmitable(this::onSubmit);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.exercise_list_container, formFragment)
+                .commitNow();
     }
 
     public void defaultOnExerciseClick(ExerciseEntity clickedExercise) {
