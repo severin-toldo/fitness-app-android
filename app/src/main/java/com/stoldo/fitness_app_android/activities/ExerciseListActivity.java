@@ -103,8 +103,10 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     // TODO implement --> Stefano
     // Hint: Edit click listener should start FormFragment do edit an exercise
     public void editOnExerciseClick(ExerciseEntity clickedExercise) {
+        FormFragment formFragment = FormFragment.newInstance(clickedExercise);
+        formFragment.setSubmitable(this::onSubmit);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.exercise_list_container, FormFragment.newInstance(clickedExercise))
+                .add(R.id.exercise_list_container, formFragment)
                 .commitNow();
     }
 
