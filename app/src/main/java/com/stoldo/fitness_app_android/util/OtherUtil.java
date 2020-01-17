@@ -1,4 +1,4 @@
-package com.stoldo.fitness_app_android.shared.util;
+package com.stoldo.fitness_app_android.util;
 
 import android.app.Activity;
 import android.content.Context;

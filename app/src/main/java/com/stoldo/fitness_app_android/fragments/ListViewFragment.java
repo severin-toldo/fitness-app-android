@@ -21,7 +21,7 @@ import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
-import com.stoldo.fitness_app_android.shared.util.LogUtil;
+import com.stoldo.fitness_app_android.util.LogUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

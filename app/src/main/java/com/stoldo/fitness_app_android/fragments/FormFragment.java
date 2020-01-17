@@ -25,8 +25,8 @@ import com.stoldo.fitness_app_android.model.Tuple;
 import com.stoldo.fitness_app_android.model.annotaions.FormField;
 import com.stoldo.fitness_app_android.model.enums.FormFieldType;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
-import com.stoldo.fitness_app_android.shared.util.LogUtil;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
+import com.stoldo.fitness_app_android.util.LogUtil;
+import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import org.apache.commons.lang3.NotImplementedException;
 

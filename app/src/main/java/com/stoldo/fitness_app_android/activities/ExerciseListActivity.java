@@ -11,14 +11,13 @@ import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
-import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.ExerciseService;
-import com.stoldo.fitness_app_android.shared.util.LogUtil;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
+import com.stoldo.fitness_app_android.util.LogUtil;
+import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

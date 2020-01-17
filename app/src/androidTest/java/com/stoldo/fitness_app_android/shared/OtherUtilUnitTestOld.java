@@ -2,9 +2,6 @@ package com.stoldo.fitness_app_android.shared;
 
 
 //import com.stoldo.fitness_app_android.BaseUnitTest;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
-
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

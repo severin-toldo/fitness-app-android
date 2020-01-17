@@ -5,7 +5,7 @@ import com.stoldo.fitness_app_android.model.abstracts.AbstractSyncService;
 import com.stoldo.fitness_app_android.model.annotaions.Singleton;
 import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
 import com.stoldo.fitness_app_android.repository.ExerciseRepository;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
+import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

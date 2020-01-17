@@ -21,8 +21,8 @@ import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import com.stoldo.fitness_app_android.service.SoundService;
 import com.stoldo.fitness_app_android.service.TimerService;
 import com.stoldo.fitness_app_android.service.WorkoutService;
-import com.stoldo.fitness_app_android.shared.util.LogUtil;
-import com.stoldo.fitness_app_android.shared.util.OtherUtil;
+import com.stoldo.fitness_app_android.util.LogUtil;
+import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.Arrays;
