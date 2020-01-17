@@ -13,7 +13,6 @@ import com.j256.ormlite.table.TableUtils;
 import com.stoldo.fitness_app_android.model.SQLSaveException;
 import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.interfaces.Entity;
-import com.stoldo.fitness_app_android.shared.util.LogUtil;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -11,7 +11,6 @@ import com.stoldo.fitness_app_android.fragments.ListViewFragment;
 import com.stoldo.fitness_app_android.model.data.ListViewData;
 import com.stoldo.fitness_app_android.model.data.entity.WorkoutEntity;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
-import com.stoldo.fitness_app_android.model.enums.ActionType;
 import com.stoldo.fitness_app_android.model.enums.ErrorCode;
 import com.stoldo.fitness_app_android.model.enums.IntentParams;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         try {
             setContentView(R.layout.activity_main);

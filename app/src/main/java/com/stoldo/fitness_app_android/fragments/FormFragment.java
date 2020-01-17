@@ -1,6 +1,7 @@
 package com.stoldo.fitness_app_android.fragments;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -30,7 +31,12 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
@@ -40,7 +46,7 @@ public class FormFragment extends Fragment {
 
     //private FormViewModel mViewModel;
     private Object fieldInformations = null;
-    private HashMap<String, Tuple<TextView, View>> labelWithView = new HashMap<>();
+    private Map<String, Tuple<TextView, View>> labelWithView = new HashMap<>();
     private int cancelCount = 0;
 
     @Setter
@@ -85,17 +91,22 @@ public class FormFragment extends Fragment {
     }
 
     private void CreateViews() {
+        HashMap<String, Tuple<TextView, View>> tempMap = new HashMap<>();
         Context context = getActivity();
-        for (Field field : this.getAnotatedFields()){
+        for (Field field : this.getFormFields()){
             FormField formfield = field.getAnnotation(FormField.class);
             if(formfield != null){
                 FormFieldType fieldType = formfield.type();
+                int index = formfield.index();
                 if(fieldType != null){
                     TextView label = new TextView(context);
                     // TODO get label text view getRessource() from annotation --> Stefano
                     String labelValue = getResources().getString(formfield.labelResRef());
                     label.setText(labelValue);
                     label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                    if(!OtherUtil.canBeNull(field)){
+                        label.setTypeface(label.getTypeface(), Typeface.BOLD);
+                    }
                     EditText view = null;
                     switch (fieldType){
                         case TEXTFIELD:
@@ -119,13 +130,42 @@ public class FormFragment extends Fragment {
                         view.setText(fieldValue.toString());
                     }
 
-                    //labelWithView.put(new Tuple<>(field.getName(), formfield.index()), new Tuple<>(label, view));
-                    labelWithView.put(field.getName(), new Tuple<>(label, view));
+                    tempMap.put(field.getName(), new Tuple<>(label, view));
+                    Tuple labelAndView = tempMap.get(field.getName());
+                    labelAndView.setExtra("index", index);
                 }
             }
         }
-        // TODO order by index --> get from annotaiomn --> Stefano
-        //labelWithView.
+
+        labelWithView = sortHashMapByValues(tempMap);
+    }
+
+    public <K extends Comparable, V extends Comparator> LinkedHashMap<K, V> sortHashMapByValues(HashMap<K, V> passedMap) {
+        List<K> mapKeys = new ArrayList<>(passedMap.keySet());
+        List<V> mapValues = new ArrayList<>(passedMap.values());
+        Collections.sort(mapValues, (o1, o2) -> o1.compare(o1, o2));
+        Collections.sort(mapKeys, (o1, o2) -> o1.compareTo(o2));
+
+        LinkedHashMap<K, V> sortedMap = new LinkedHashMap<>();
+
+        Iterator<V> valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            V val = valueIt.next();
+            Iterator<K> keyIt = mapKeys.iterator();
+
+            while (keyIt.hasNext()) {
+                K key = keyIt.next();
+                V comp1 = passedMap.get(key);
+                V comp2 = val;
+
+                if (comp1.equals(comp2)) {
+                    keyIt.remove();
+                    sortedMap.put(key, val);
+                    break;
+                }
+            }
+        }
+        return sortedMap;
     }
 
     private LinearLayout createSubmitAndCancelButton(){
@@ -177,7 +217,7 @@ public class FormFragment extends Fragment {
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
-    private Field[] getAnotatedFields(){
+    private Field[] getFormFields(){
         ArrayList<Field> annotatedFields = new ArrayList<>();
 
         Field[] fields = this.fieldInformations.getClass().getDeclaredFields();
@@ -199,18 +239,32 @@ public class FormFragment extends Fragment {
             LogUtil.logError("Die Methode onSubmit muss überschrienen werden mit setSubmitable" , this.getClass(), new NotImplementedException("Diese Methode muss überschrieben werden."));
             throw new NotImplementedException("Diese Methode muss überschrieben werden.");
         }
-        for (Field field : this.getAnotatedFields()) {
-            if(labelWithView.get(field.getName()) != null) {
-                String text = ((TextView)labelWithView.get(field.getName()).getValue()).getText().toString();
+
+        boolean succeded = true;
+        for (Field field : this.getFormFields()) {
+
+            Tuple<TextView, View> labelAndView = labelWithView.get(field.getName());
+            if(labelAndView != null) {
+                //value = editview, key = label
+                TextView view = ((TextView)labelAndView.getValue());
+                String text = view.getText().toString();
+                if(!OtherUtil.canBeNull(field)){
+                    if(text == null || text.isEmpty()){
+                        view.setError("Dieses Feld ist Pflicht");
+                        succeded = false;
+                        continue;
+                    }
+                }
                 OtherUtil.runSetter(field, this.fieldInformations, text);
             }
-
         }
 
-        this.submitable.onSubmit(this.fieldInformations);
-        OtherUtil.hideKeyboard(this.getActivity());
+        if(succeded){
+            this.submitable.onSubmit(this.fieldInformations);
+            closeFragment();
+        }
 
-        closeFragment();
+        OtherUtil.hideKeyboard(this.getActivity());
     }
 
     public void onClickCancel(View v){

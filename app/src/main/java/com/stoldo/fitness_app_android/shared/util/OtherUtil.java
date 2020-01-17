@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
 
+import com.j256.ormlite.field.DatabaseField;
 import com.stoldo.fitness_app_android.service.SingletonService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -144,6 +145,15 @@ public class OtherUtil {
      * */
     public static void popToast(Activity activity, String message) {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
+    }
+
+    public static boolean canBeNull(Field field){
+        if(field != null){
+            DatabaseField dBField = field.getAnnotation(DatabaseField.class);
+            return dBField.canBeNull();
+        }
+
+        return false;
     }
 
     // TODO javadoc --> Stefano
