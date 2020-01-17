@@ -147,6 +147,8 @@ public class OtherUtil {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
     }
 
+    // TODO javadoc --> Stefano
+    // TODO unit tests --> Stefano
     public static boolean canBeNull(Field field){
         if(field != null){
             DatabaseField dBField = field.getAnnotation(DatabaseField.class);

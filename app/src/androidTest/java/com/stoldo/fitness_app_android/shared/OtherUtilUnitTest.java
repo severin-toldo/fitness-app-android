@@ -1,23 +1,13 @@
 package com.stoldo.fitness_app_android.shared;
 
-import android.util.Log;
-
 import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-// fuck yeah this works --> can be used for android tests.
-
-public class OtherUtilUnitTest extends AbstraceBaseUnitTest {
+public class OtherUtilUnitTest {
     @Test
-    public void serviceTest() {
-        Assert.assertEquals(true, true);
-        Log.d("MYDEBUG", "Hello World");
-    }
-
-    @Test
-    public void isValidIndexTestt() {
+    public void isValidIndexTest() {
         int listSize = 12;
 
         // positive tests
@@ -33,8 +23,5 @@ public class OtherUtilUnitTest extends AbstraceBaseUnitTest {
         Assert.assertEquals(false, OtherUtil.isValidIndex(80, listSize));
     }
 
-    // TODO add runSetter() & runGetter()
-    // TODO try mocking context again and test dp to pixel etc.
-// TODO also test the own exception
-// TODO evtl repo testing with mocking and then return?
+    // TODO runGetter() and runSetter()
 }
