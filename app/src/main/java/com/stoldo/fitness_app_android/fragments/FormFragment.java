@@ -3,6 +3,7 @@ package com.stoldo.fitness_app_android.fragments;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -111,16 +112,18 @@ public class FormFragment extends Fragment {
                     switch (fieldType){
                         case TEXTFIELD:
                             view = new EditText(context);
+                            view.setInputType(InputType.TYPE_CLASS_TEXT);
+                            view.setSingleLine();
                             view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                         case NUMBERFIELD:
-                            // TODO make number --> Stefano
                             view = new EditText(context);
+                            view.setInputType(InputType.TYPE_CLASS_NUMBER);
                             view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                         case TEXTAREA:
-                            // TODO make textarea --> Stefano
                             view = new EditText(context);
+                            view.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                             view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                     }
@@ -269,9 +272,11 @@ public class FormFragment extends Fragment {
 
     public void onClickCancel(View v){
         closeFragment();
+        OtherUtil.hideKeyboard(this.getActivity());
     }
 
     public void onClickOutSide(View v) {
         closeFragment();
+        OtherUtil.hideKeyboard(this.getActivity());
     }
 }
