@@ -1,7 +1,9 @@
 package com.stoldo.fitness_app_android.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,6 +25,7 @@ import com.stoldo.fitness_app_android.util.OtherUtil;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
     private List<WorkoutEntity> workouts = new ArrayList<>();
@@ -34,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
         super.onCreate(savedInstanceState);
 
 
+        this.updateLanguage("");
         try {
             setContentView(R.layout.activity_main);
             setTitle(R.string.activity_workouts);
@@ -124,5 +128,13 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.workout_list_container, formFragment)
                 .commitNow();
+    }
+
+    private void updateLanguage(String lang){
+        Resources res = this.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        android.content.res.Configuration conf = res.getConfiguration();
+        conf.setLocale(new Locale(lang.toLowerCase()));
+        res.updateConfiguration(conf, dm);
     }
 }

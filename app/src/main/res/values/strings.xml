@@ -6,20 +6,22 @@
     <string name="position">Positionen</string>
     <string name="note">Notizen</string>
     <string name="description">Beschreibung</string>
-    <string name="prepare_seconds">Prepare</string>
-    <string name="rest_seconds">Rest</string>
-    <string name="seconds">Work</string>
-    <string name="title">Titel</string>
+    <string name="prepare_seconds">Aufwärmen</string>
+    <string name="rest_seconds">Pause</string>
+    <string name="seconds">Zeit</string>
 
-    <string name="activity_workouts">Workouts</string>
+    <string name="activity_workouts">Trainingseinheiten</string>
     <string name="activity_exercise_list">Übungen</string>
     <string name="title_activity_exercise_start">ExerciseStartActivity</string>
 
-    <string name="placeholder_workout_title">${WORKOUT_TITLE}</string>
-    <string name="placeholder_workout_description">${WORKOUT_DESCRIPTION}</string>
-    <string name="placeholder_exercise_seconds">${SECONDS}</string>
-    <string name="placeholder_exercise_title">${EXERCISE_TITLE}</string>
-    <string name="placeholder_exercise_description">${EXERCISE_DESCRIPTION}</string>
-    <string name="placeholder_exercise_remaining_seconds">${RS}</string>
-    <string name="placeholder_exercise_next_exercise">${NEXT_EXERCISE}</string>
+    <string name="placeholder_workout_title" translatable="false">${WORKOUT_TITLE}</string>
+    <string name="placeholder_workout_description" translatable="false">${WORKOUT_DESCRIPTION}</string>
+    <string name="placeholder_exercise_seconds" translatable="false">${SECONDS}</string>
+    <string name="placeholder_exercise_title" translatable="false">${EXERCISE_TITLE}</string>
+    <string name="placeholder_exercise_description" translatable="false">${EXERCISE_DESCRIPTION}</string>
+    <string name="placeholder_exercise_remaining_seconds" translatable="false">${RS}</string>
+    <string name="placeholder_exercise_next_exercise" translatable="false">${NEXT_EXERCISE}</string>
+    <string name="title">Titel</string>
+    <string name="apply">Anwenden</string>
+    <string name="cancel">Abbrechen</string>
 </resources>

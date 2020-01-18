@@ -1,6 +1,7 @@
 package com.stoldo.fitness_app_android.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.InputType;
@@ -42,20 +43,21 @@ import java.util.Map;
 
 import lombok.Setter;
 
-// TODO java doc --> Stefano
+/***
+ * Reusable fragment for generically edit or View classes
+ */
 public class FormFragment extends Fragment {
 
     //private FormViewModel mViewModel;
-    private Object fieldInformations = null;
+    private Object fieldInformations;
     private Map<String, Tuple<TextView, View>> labelWithView = new HashMap<>();
-    private int cancelCount = 0;
 
     @Setter
     private Submitable submitable = null;
 
     public static FormFragment newInstance(Object fieldinformations) {
         return new FormFragment(fieldinformations);
-}
+    }
 
     public FormFragment(Object fieldinformations){
         this.fieldInformations = fieldinformations;
@@ -70,7 +72,7 @@ public class FormFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.CreateViews();
+        labelWithView = this.CreateViews();
 
         LinearLayout linearLayout = getView().findViewById(R.id.genericLayout);
         LayoutParams labelParams = getLabelParams();
@@ -91,7 +93,7 @@ public class FormFragment extends Fragment {
         ll.setOnClickListener(this::onClickOutSide);
     }
 
-    private void CreateViews() {
+    private HashMap<String, Tuple<TextView, View>> CreateViews() {
         HashMap<String, Tuple<TextView, View>> tempMap = new HashMap<>();
         Context context = getActivity();
         for (Field field : this.getFormFields()){
@@ -101,29 +103,27 @@ public class FormFragment extends Fragment {
                 int index = formfield.index();
                 if(fieldType != null){
                     TextView label = new TextView(context);
-                    // TODO get label text view getRessource() from annotation --> Stefano
                     String labelValue = getResources().getString(formfield.labelResRef());
                     label.setText(labelValue);
+                    label.setTextColor(Color.WHITE);
                     label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
                     if(!OtherUtil.canBeNull(field)){
                         label.setTypeface(label.getTypeface(), Typeface.BOLD);
                     }
-                    EditText view = null;
+                    EditText view = new EditText(context);;
+                    view.setTextColor(Color.WHITE);
                     switch (fieldType){
                         case TEXTFIELD:
-                            view = new EditText(context);
                             view.setInputType(InputType.TYPE_CLASS_TEXT);
                             view.setSingleLine();
                             view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                         case NUMBERFIELD:
-                            view = new EditText(context);
                             view.setInputType(InputType.TYPE_CLASS_NUMBER);
                             view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                         case TEXTAREA:
-                            view = new EditText(context);
-                            view.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                            view.setInputType(InputType.TYPE_CLASS_TEXT |InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                             view.setForegroundGravity(Gravity.CENTER_VERTICAL);
                             break;
                     }
@@ -140,7 +140,7 @@ public class FormFragment extends Fragment {
             }
         }
 
-        labelWithView = sortHashMapByValues(tempMap);
+        return sortHashMapByValues(tempMap);
     }
 
     public <K extends Comparable, V extends Comparator> LinkedHashMap<K, V> sortHashMapByValues(HashMap<K, V> passedMap) {
@@ -178,11 +178,11 @@ public class FormFragment extends Fragment {
         horizontalLinearlayout.setLayoutParams(layoutParams);
 
         Button buttonApply = new Button(getActivity());
-        buttonApply.setText("Apply");
+        buttonApply.setText(R.string.apply);
         buttonApply.setOnClickListener(this::onSubmit);
         Button buttonCancel = new Button(getActivity());
         buttonCancel.setOnClickListener(this::onClickCancel);
-        buttonCancel.setText("Cancel");
+        buttonCancel.setText(R.string.cancel);
 
         LayoutParams layoutParams1 = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         layoutParams1.weight = 1;

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">fitness-app-android</string>
+    <string name="action_settings">settings</string>
+    <string name="activity_exercise_list">exercises</string>
+    <string name="activity_workouts">workouts</string>
+    <string name="description">description</string>
+    <string name="level">weight / niveau</string>
+    <string name="note">note</string>
+    <string name="position">positions</string>
+    <string name="prepare_seconds">prepare</string>
+    <string name="rest_seconds">rest</string>
+    <string name="seconds">work</string>
+    <string name="title">title</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_exercise_start">ExerciseStartActivity</string>
+</resources>
