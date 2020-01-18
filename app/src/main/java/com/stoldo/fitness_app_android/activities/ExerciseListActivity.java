@@ -20,12 +20,10 @@ import com.stoldo.fitness_app_android.util.LogUtil;
 import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class ExerciseListActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
-    private List<ExerciseEntity> exercises = new ArrayList<>();
     private Integer workoutId;
     private ListViewFragment exerciseListViewFragment = null;
 
@@ -35,7 +33,6 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     }
 
     private ExerciseService exerciseService = (ExerciseService) OtherUtil.getSingletonInstance(ExerciseService.class);
-    private ListViewFragment exerciselistViewFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +43,8 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
         try {
             Integer workoutId = getIntent().getIntExtra(IntentParams.WORKOUT_ID.name(), 0);
             this.workoutId = workoutId;
-            exercises = exerciseService.getExercisesByWorkoutId(workoutId);
-            setUpExerciseListView(savedInstanceState);
+            List<ExerciseEntity> exercises = exerciseService.getExercisesByWorkoutId(workoutId);
+            setUpExerciseListView(savedInstanceState, exercises);
         } catch (SQLException sqle) {
             LogUtil.logError(sqle.getMessage(), this.getClass(), sqle);
         } catch (Exception e) {
@@ -81,14 +78,13 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     }
 
     // TODO make generic if possible
-    private void setUpExerciseListView(Bundle savedInstanceState) throws Exception {
+    private void setUpExerciseListView(Bundle savedInstanceState, List<ExerciseEntity> exercises) throws Exception {
         ListViewData<ExerciseListActivity, ExerciseEntity> listViewData = new ListViewData<>();
         listViewData.setItems(exercises);
         listViewData.setItemLayout(R.layout.exercise_item);
         listViewData.setListViewSubscriber(this);
         listViewData.setDefaultItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("defaultOnExerciseClick", ExerciseEntity.class));
         listViewData.setEditItemClickMethod(ExerciseListActivity.class.getDeclaredMethod("editOnExerciseClick", ExerciseEntity.class));
-
 
         exerciseListViewFragment = ListViewFragment.newInstance(listViewData);
 
@@ -115,7 +111,6 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
         startActivity(intent);
     }
 
-    // TODO implement --> Stefano
     // Hint: Edit click listener should start FormFragment do edit an exercise
     public void editOnExerciseClick(ExerciseEntity clickedExercise) {
         FormFragment formFragment = FormFragment.newInstance(clickedExercise);
@@ -128,10 +123,11 @@ public class ExerciseListActivity extends AppCompatActivity implements Subscribe
     @Override
     public Object onSubmit(Object value) {
             ExerciseEntity newExercise = (ExerciseEntity)value;
-            if (newExercise != null && !this.exercises.contains(newExercise)){
-                this.exercises.add(newExercise);
+            List<ExerciseEntity> exercises = exerciseListViewFragment.getItems();
+            if (newExercise != null && !exercises.contains(newExercise)){
+                exercises.add(newExercise);
            }
-        exerciseListViewFragment.updateItems(this.exercises);
+        exerciseListViewFragment.updateItems(exercises);
         return null;
     }
 }

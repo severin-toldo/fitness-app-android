@@ -114,9 +114,14 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
 
     // TODO tahts why after an add the click handlers dont work anymore
     public void updateItems(List<I> data){
-        CustomListViewAdapter<I> customListViewAdapter = new CustomListViewAdapter<>(data, listViewData.getItemLayout(), getActivity().getApplicationContext(), this, editMode);
+        listViewData.setItems(data);
+        CustomListViewAdapter<I> customListViewAdapter = new CustomListViewAdapter<>(listViewData.getItems(), listViewData.getItemLayout(), getActivity().getApplicationContext(), this, editMode);
         listView = getView().findViewById(R.id.element_list_list_view);
         listView.setAdapter(customListViewAdapter);
+    }
+
+    public List<I> getItems(){
+        return listViewData.getItems();
     }
 
     private void onEdit() {

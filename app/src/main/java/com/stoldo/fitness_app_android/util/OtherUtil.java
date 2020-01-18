@@ -29,7 +29,13 @@ import java.lang.reflect.Method;
  * A general Util class.
  * */
 public class OtherUtil {
-    // TODO java doc --> Stefano
+
+    /**
+     * Converts from the device independent dp value to pixel
+     * @param dp
+     * @param context
+     * @return
+     */
     public static int convertDpToPixel(int dp, Context context){
         Resources r = context.getResources();
         return (int) TypedValue.applyDimension(
@@ -39,65 +45,79 @@ public class OtherUtil {
         );
     }
 
-    // TODO unify --> Stefano
-    // TODO java doc --> Stefano
-    // TODO unit test --> Stefano
-    public static void runSetter(Field field, Object o, Object value) {
+    /**
+     * Gets the method in the spedified class with the given field and method name beginning
+     * @param start the beginning of the Methods name
+     * @param field the field which name should be in the method
+     * @param o the object in which the method should be
+     * @return the method
+     */
+    public static Method getMethod(String start, Field field, Object o){
         // MZ: Find the correct method
         for (Method method : o.getClass().getMethods()) {
-            if ((method.getName().startsWith("set")) && (method.getName().length() == (field.getName().length() + 3))) {
+            if ((method.getName().startsWith(start)) && (method.getName().length() == (field.getName().length() + 3))) {
                 if (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) {
                     // MZ: Method found, run it
-                    try {
-                        Class parType = field.getType();
-                        if(value.getClass() != parType){
-                            if(StringUtils.isEmpty(value.toString())){
-                                //TODO: könnte besser sein
-                                if(parType == Integer.class){
-                                    value = 0;
-                                }
-                                //else....
-                            }else {
-                                Constructor convertConstructor = parType.getConstructor(String.class);
-                                value = convertConstructor.newInstance(value);
-                            }
-
-                        }
-
-                        method.invoke(o, value);
-
-                        return;
-
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        Log.e("OtherUtil", "Could not determine method: " + method.getName());
-                    } catch (NoSuchMethodException e) {
-                        Log.e("OtherUtil", "Could not determine constructor of target Class to Convert: " + method.getName());
-                    } catch (InstantiationException e) {
-                        Log.e("OtherUtil", "target Class has no Constructor to Convert: " + method.getName());
-                    }
-
+                        return method;
                 }
             }
         }
+        return null;
     }
 
-    // TODO unify --> Stefano
-    // TODO java doc --> Stefano
     // TODO unit test --> Stefano
-    public static Object runGetter(Field field, Object o) {
-        // MZ: Find the correct method
-        for (Method method : o.getClass().getMethods()) {
-            if ((method.getName().startsWith("get")) && (method.getName().length() == (field.getName().length() + 3))) {
-                if (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) {
-                    // MZ: Method found, run it
-                    try {
-                        return method.invoke(o);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        Log.e("OtherUtil", "Could not determine method: " + method.getName());
+    /**
+     * Sets a value to the field by the setter
+     * @param field the field which name should be in the method
+     * @param o the object in which the method should be
+     * @param value the new value for the field
+     */
+    public static void runSetter(Field field, Object o, Object value) {
+        Method setter = getMethod("set", field, o);
+        try {
+            Class parType = field.getType();
+            if (value.getClass() != parType) {
+                if (StringUtils.isEmpty(value.toString())) {
+                    //TODO: könnte besser sein
+                    if (parType == Integer.class) {
+                        value = 0;
                     }
-
+                    //else....
+                } else {
+                    Constructor convertConstructor = parType.getConstructor(String.class);
+                    value = convertConstructor.newInstance(value);
                 }
+
             }
+
+            setter.invoke(o, value);
+
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            Log.e("OtherUtil", "Could not determine method: " + setter.getName());
+        } catch (NoSuchMethodException e) {
+            Log.e("OtherUtil", "Could not determine constructor of target Class to Convert: " + setter.getName());
+        } catch (InstantiationException e) {
+            Log.e("OtherUtil", "target Class has no Constructor to Convert: " + setter.getName());
+        }
+    }
+
+    // TODO unit test --> Stefano
+    /**
+     * Gets the value of the field by its getter
+     * @param field the field which name should be in the method
+     * @param o the object in which the method should be
+     * @return the value of the field
+     */
+    public static Object runGetter(Field field, Object o) {
+        Method getter = getMethod("get", field, o);
+        try {
+            if (getter != null) {
+                return getter.invoke(o);
+            }
+        } catch (IllegalAccessException e) {
+            Log.e("OtherUtil", "Could not determine getter method: " + getter.getName());
+        } catch (InvocationTargetException e) {
+            Log.e("OtherUtil", "Could not invoke method: " + getter.getName());
         }
 
         return null;
@@ -147,8 +167,12 @@ public class OtherUtil {
         Toast.makeText(activity, message, Toast.LENGTH_LONG).show();
     }
 
-    // TODO javadoc --> Stefano
     // TODO unit tests --> Stefano
+    /**
+     * says if the field in the database can be null
+     * @param field the field to be checked
+     * @return if the field can be null
+     */
     public static boolean canBeNull(Field field){
         if(field != null){
             DatabaseField dBField = field.getAnnotation(DatabaseField.class);
@@ -158,7 +182,10 @@ public class OtherUtil {
         return false;
     }
 
-    // TODO javadoc --> Stefano
+    /**
+     * Hides the keyboard
+     * @param activity the activity
+     */
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         //Find the currently focused view, so we can grab the correct window token from it.

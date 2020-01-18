@@ -23,12 +23,10 @@ import com.stoldo.fitness_app_android.util.LogUtil;
 import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
-    private List<WorkoutEntity> workouts = new ArrayList<>();
     private ListViewFragment workoutListViewFragment = null;
     private WorkoutService workoutService = null;
 
@@ -47,8 +45,8 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
             singletonService.instantiateSingletons();
 
             workoutService = (WorkoutService) singletonService.getSingletonByClass(WorkoutService.class);
-            workouts = workoutService.getWorkouts();
-            setUpWorkoutListView(savedInstanceState);
+            List<WorkoutEntity> workouts = workoutService.getWorkouts();
+            setUpWorkoutListView(savedInstanceState, workouts);
         } catch (SQLException sqle) {
             LogUtil.logError(sqle.getMessage(), this.getClass(), sqle);
         } catch (Exception e) {
@@ -82,10 +80,11 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     @Override
     public Object onSubmit(Object value) {
         WorkoutEntity newWorkout = (WorkoutEntity)value;
-        if (newWorkout != null && !this.workouts.contains(newWorkout)){
-            this.workouts.add(newWorkout);
+        List<WorkoutEntity> workouts = workoutListViewFragment.getItems();
+        if (newWorkout != null && !workouts.contains(newWorkout)){
+            workouts.add(newWorkout);
         }
-        workoutListViewFragment.updateItems(this.workouts);
+        workoutListViewFragment.updateItems(workouts);
         return null;
     }
 
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     }
 
     // TODO make generic if possible
-    private void setUpWorkoutListView(Bundle savedInstanceState) throws Exception {
+    private void setUpWorkoutListView(Bundle savedInstanceState, List<WorkoutEntity> workouts) throws Exception {
         ListViewData<MainActivity, WorkoutEntity> listViewData = new ListViewData<>();
         listViewData.setItems(workouts);
         listViewData.setItemLayout(R.layout.workout_item);
@@ -113,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
         listViewData.setEditItemClickMethod(MainActivity.class.getDeclaredMethod("editOnWorkoutClick", WorkoutEntity.class));
 
         workoutListViewFragment = ListViewFragment.newInstance(listViewData);
-
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.workout_list_container, workoutListViewFragment)
