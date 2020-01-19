@@ -32,9 +32,9 @@ public class OtherUtil {
 
     /**
      * Converts from the device independent dp value to pixel
-     * @param dp
+     * @param dp Density-independent Pixels
      * @param context
-     * @return
+     * @return pixel value
      */
     public static int convertDpToPixel(int dp, Context context){
         Resources r = context.getResources();
