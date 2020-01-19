@@ -3,8 +3,6 @@ package com.stoldo.fitness_app_android.activities;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.FormFragment;
 import com.stoldo.fitness_app_android.fragments.ListViewFragment;
@@ -23,7 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class ExerciseListActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
+public class ExerciseListActivity extends BaseActivity implements Subscriber<ActionEvent>, Submitable {
     private Integer workoutId;
     private ListViewFragment exerciseListViewFragment = null;
 

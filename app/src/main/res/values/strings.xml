@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">fitness-app-android</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Einstellungen</string>
     <string name="level">Gewicht / Niveau</string>
     <string name="position">Positionen</string>
     <string name="note">Notizen</string>
@@ -24,4 +24,17 @@
     <string name="title">Titel</string>
     <string name="apply">Anwenden</string>
     <string name="cancel">Abbrechen</string>
+    <string name="placeholder_exercise_note" translatable="false">${EXERCISE_NOTE}</string>
+    <string name="next_exercise">Nächste Übung</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_activity_settings">Einstellungen</string>
+
+    <!-- Preference Titles -->
+
+    <!-- Messages Preferences -->
+
+    <!-- Sync Preferences -->
+    <string name="language">Sprache</string>
+    <string name="title_activity_base">BaseActivity</string>
 </resources>

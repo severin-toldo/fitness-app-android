@@ -1,14 +1,12 @@
 package com.stoldo.fitness_app_android.activities;
 
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.data.entity.ExerciseEntity;
@@ -29,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class ExerciseStartActivity extends AppCompatActivity implements Subscriber<TimerEvent> {
+public class ExerciseStartActivity extends BaseActivity implements Subscriber<TimerEvent> {
     // Views
     private ImageButton pauseExerciseButton;
     private ImageButton playExerciseButton;
@@ -37,6 +35,7 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
     private ImageButton nextExerciseButton;
     private TextView remainingSecondsTextView;
     private TextView nextExerciseTextView;
+    private TextView titleTextView;
     private ConstraintLayout background;
 
     private List<ExerciseEntity> exercisesOfWorkout;
@@ -52,6 +51,8 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
     private WorkoutService workoutService = (WorkoutService) OtherUtil.getSingletonInstance(WorkoutService.class);
     private TimerService timerService = (TimerService) OtherUtil.getSingletonInstance(TimerService.class);
     private SoundService soundService = (SoundService) OtherUtil.getSingletonInstance(SoundService.class);
+    private TextView descriptionTextView;
+    private TextView noteTextView;
 
 
     @Override
@@ -145,6 +146,10 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         nextExerciseTextView = findViewById(R.id.nextExerciseTextView);
         nextExerciseTextView.setTextColor(getResources().getColor(R.color.white));
 
+        titleTextView = findViewById(R.id.titleTextView);
+        descriptionTextView = findViewById(R.id.descriptionTextView);
+        noteTextView = findViewById(R.id.noteTextView);
+
         background = findViewById(R.id.activity_exercise_start_container);
     }
 
@@ -180,6 +185,9 @@ public class ExerciseStartActivity extends AppCompatActivity implements Subscrib
         // update ui
         remainingSecondsTextView.setText(currentExercise.getPrepareSeconds().toString());
         nextExerciseTextView.setText(nextExerciseEntity.getTitle());
+        titleTextView.setText(currentExercise.getTitle());
+        descriptionTextView.setText(currentExercise.getDescription());
+        noteTextView.setText(currentExercise.getNote());
         changeBackgroundColorByTimeType(defaultTimeType);
 
         if (action == ActionType.NEXT || action == ActionType.PREVIOUS) {

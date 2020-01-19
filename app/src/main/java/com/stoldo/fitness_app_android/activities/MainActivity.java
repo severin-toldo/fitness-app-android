@@ -1,11 +1,9 @@
 package com.stoldo.fitness_app_android.activities;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-
-import androidx.appcompat.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.fragments.FormFragment;
@@ -24,9 +22,8 @@ import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements Subscriber<ActionEvent>, Submitable {
+public class MainActivity extends BaseActivity implements Subscriber<ActionEvent>, Submitable {
     private ListViewFragment workoutListViewFragment = null;
     private WorkoutService workoutService = null;
 
@@ -34,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        this.updateLanguage("");
         try {
             setContentView(R.layout.activity_main);
             setTitle(R.string.activity_workouts);
@@ -111,8 +106,8 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
         listViewData.setDefaultItemClickMethod(MainActivity.class.getDeclaredMethod("defaultOnWorkoutClick", WorkoutEntity.class));
         listViewData.setEditItemClickMethod(MainActivity.class.getDeclaredMethod("editOnWorkoutClick", WorkoutEntity.class));
 
-        workoutListViewFragment = ListViewFragment.newInstance(listViewData);
         if (savedInstanceState == null) {
+            workoutListViewFragment = ListViewFragment.newInstance(listViewData);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.workout_list_container, workoutListViewFragment)
                     .commitNow();
@@ -128,11 +123,24 @@ public class MainActivity extends AppCompatActivity implements Subscriber<Action
                 .commitNow();
     }
 
-    private void updateLanguage(String lang){
-        Resources res = this.getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        android.content.res.Configuration conf = res.getConfiguration();
-        conf.setLocale(new Locale(lang.toLowerCase()));
-        res.updateConfiguration(conf, dm);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.action_settings:
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
