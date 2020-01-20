@@ -65,7 +65,6 @@ public class OtherUtil {
         return null;
     }
 
-    // TODO unit test --> Stefano
     /**
      * Sets a value to the field by the setter
      * @param field the field which name should be in the method
@@ -101,7 +100,6 @@ public class OtherUtil {
         }
     }
 
-    // TODO unit test --> Stefano
     /**
      * Gets the value of the field by its getter
      * @param field the field which name should be in the method
