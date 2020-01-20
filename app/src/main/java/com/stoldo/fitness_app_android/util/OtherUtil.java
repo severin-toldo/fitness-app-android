@@ -194,4 +194,16 @@ public class OtherUtil {
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
+    /**
+     * Throws given expetion if given boolean is false.
+     *
+     * @param b if false, exception is thrown, if true no exception is thrown
+     * @param e Exception to throw
+     * */
+    public static void falseThenThrow(boolean b, Exception e) throws Exception {
+        if (!b) {
+            throw e;
+        }
+    }
 }
