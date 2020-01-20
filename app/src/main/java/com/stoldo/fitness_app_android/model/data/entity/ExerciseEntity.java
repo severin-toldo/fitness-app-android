@@ -10,7 +10,6 @@ import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 
 import lombok.NoArgsConstructor;
 
-// TODO set index correctly
 // TODO field not nulls
 @lombok.Getter
 @lombok.Setter
