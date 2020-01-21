@@ -37,4 +37,6 @@
 
     <!-- Sync Preferences -->
     <string name="language">Sprache</string>
+    <string name="placeholder_exercise_level" translatable="false" >${EXERCISE_LEVEL}</string>
+    <string name="placeholder_exercise_position" translatable="false">${EXERCISE_POSITION}</string>
 </resources>

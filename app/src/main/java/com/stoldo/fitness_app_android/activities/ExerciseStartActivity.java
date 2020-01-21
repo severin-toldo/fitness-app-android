@@ -53,6 +53,8 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
     private SoundService soundService = (SoundService) OtherUtil.getSingletonInstance(SoundService.class);
     private TextView descriptionTextView;
     private TextView noteTextView;
+    private TextView positionTextView;
+    private TextView levelTextView;
 
 
     @Override
@@ -149,6 +151,8 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
         titleTextView = findViewById(R.id.titleTextView);
         descriptionTextView = findViewById(R.id.descriptionTextView);
         noteTextView = findViewById(R.id.noteTextView);
+        levelTextView = findViewById(R.id.levelTextView);
+        positionTextView = findViewById(R.id.positionTextView);
 
         background = findViewById(R.id.activity_exercise_start_container);
     }
@@ -183,16 +187,26 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
         nextExerciseEntity = getExerciseByIndex(currentExerciseIndex + 1);
 
         // update ui
-        remainingSecondsTextView.setText(currentExercise.getPrepareSeconds().toString());
-        nextExerciseTextView.setText(nextExerciseEntity.getTitle());
-        titleTextView.setText(currentExercise.getTitle());
-        descriptionTextView.setText(currentExercise.getDescription());
-        noteTextView.setText(currentExercise.getNote());
+        remainingSecondsTextView.setText(hyphenIfNullorEmpty(currentExercise.getPrepareSeconds().toString()));
+        nextExerciseTextView.setText(hyphenIfNullorEmpty(nextExerciseEntity.getTitle()));
+        titleTextView.setText(hyphenIfNullorEmpty(currentExercise.getTitle()));
+        descriptionTextView.setText(hyphenIfNullorEmpty(currentExercise.getDescription()));
+        noteTextView.setText(hyphenIfNullorEmpty(currentExercise.getNote()));
+        levelTextView.setText(hyphenIfNullorEmpty(currentExercise.getLevel()));
+        positionTextView.setText(hyphenIfNullorEmpty(currentExercise.getPosition()));
         changeBackgroundColorByTimeType(defaultTimeType);
 
         if (action == ActionType.NEXT || action == ActionType.PREVIOUS) {
             startExerciseCountdown();
         }
+    }
+
+    private String hyphenIfNullorEmpty(String value){
+        if(value == null || value.isEmpty()){
+            return "-";
+        }
+
+        return value;
     }
 
     private void startExerciseCountdown() {
