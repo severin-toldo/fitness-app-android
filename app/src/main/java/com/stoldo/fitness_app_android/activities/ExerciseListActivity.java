@@ -62,9 +62,4 @@ public class ExerciseListActivity extends BaseListViewActivity<ExerciseListActiv
         intent.putExtra(IntentParams.WORKOUT_ID.name(), workoutId);
         startActivity(intent);
     }
-
-    @Override
-    public void editOnListItemClick(ExerciseEntity clickedExercise) {
-        setUpEditForm(clickedExercise);
-    }
 }

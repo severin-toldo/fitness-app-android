@@ -91,13 +91,13 @@ public abstract class BaseListViewActivity<A extends Subscriber<ActionEvent>, I 
         }
     }
 
-    protected void setUpListView(Bundle savedInstanceState, List<I> exercises) throws Exception {
+    protected void setUpListView(Bundle savedInstanceState, List<I> exercises) throws NoSuchMethodException {
         ListViewData<A, I> listViewData = new ListViewData<>();
         listViewData.setItems(exercises);
         listViewData.setItemLayout(itemLayoutId);
         listViewData.setListViewSubscriber((A)this);
         listViewData.setDefaultItemClickMethod(this.getClass().getDeclaredMethod("defaultOnListItemClick", entityClass));
-        listViewData.setEditItemClickMethod(this.getClass().getDeclaredMethod("editOnListItemClick", entityClass));
+        listViewData.setEditItemClickMethod(this.getClass().getMethod("editOnListItemClick", ListItem.class));
 
         if (savedInstanceState == null) {
             listViewFragment = ListViewFragment.newInstance(listViewData);
@@ -111,5 +111,7 @@ public abstract class BaseListViewActivity<A extends Subscriber<ActionEvent>, I 
 
     public abstract void defaultOnListItemClick(I clickedEntity);
 
-    public abstract void editOnListItemClick(I clickedEntity);
+    public void editOnListItemClick(I clickedEntity){
+        setUpEditForm(clickedEntity);
+    }
 }
