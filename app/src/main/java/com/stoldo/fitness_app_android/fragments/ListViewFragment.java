@@ -40,7 +40,6 @@ public class ListViewFragment<S extends Subscriber<ActionEvent>, I extends ListI
     @Getter
     private List<I> baseItems; // Alle gespeicherten items
 
-
     public static ListViewFragment newInstance(@lombok.NonNull ListViewData listViewData) {
         return new ListViewFragment<>(listViewData);
     }
