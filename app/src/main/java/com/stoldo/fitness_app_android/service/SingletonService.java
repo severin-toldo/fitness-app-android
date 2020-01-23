@@ -52,12 +52,20 @@ public class SingletonService {
         return instance;
     }
 
+    /**
+     * Returns the singleton instance of the given class
+     *
+     * @param singletonClass class of disired singleton
+     * */
     public Object getSingletonByClass(Class singletonClass) {
         return singletonObjects.get(singletonClass.getName());
     }
 
     /**
-     * Source: https://stackoverflow.com/questions/15446036/find-all-classes-in-a-package-in-android
+     * Loops over all classes in the project (Source: https://stackoverflow.com/questions/15446036/find-all-classes-in-a-package-in-android)
+     * and instantiate them.
+     *
+     * @throws Exception if something fails.
      * */
     public void instantiateSingletons() throws Exception {
         if (calledTimes == 0) {
@@ -78,6 +86,12 @@ public class SingletonService {
         calledTimes++;
     }
 
+    /**
+     * instantiate a given singleton class
+     *
+     * @param clazz class to instantiate
+     * @throws Exception if something fails
+     * */
     private void instantiateSingleton(Class clazz) throws Exception {
         if (clazz.isAnnotationPresent(Singleton.class)) {
             Constructor constructor = getConstructor(clazz);
@@ -95,6 +109,16 @@ public class SingletonService {
         }
     }
 
+    /**
+     * Gets the singleton valid constructor of the given class.
+     * A constrcutor is valid if:
+     *  - hes the only one
+     *  - hes not public
+     *  - has none or one parameter
+     *
+     * @param clazz Class to get the valid constuctor from
+     * @return found constructor
+     * */
     private Constructor getConstructor(Class clazz) throws Exception {
         Constructor[] constructors = clazz.getDeclaredConstructors();
 
@@ -113,6 +137,12 @@ public class SingletonService {
         return constructors[0];
     }
 
+    /**
+     * Checks if class is in the given package and if its not an annoymous class.
+     *
+     * @param className Name of the class to check
+     * @return true if the class fulfills the conditions, false if not
+     * */
     private boolean isClassInMyPackage(String className) {
         return StringUtils.startsWith(className, context.getPackageName()) // I want classes under my package
                 && !StringUtils.contains(className, "$"); // I don't need none-static inner classes

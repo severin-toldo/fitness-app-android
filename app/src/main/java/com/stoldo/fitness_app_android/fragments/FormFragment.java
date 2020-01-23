@@ -46,6 +46,7 @@ import lombok.Setter;
 /***
  * Reusable fragment for generically edit or View classes
  */
+// TODO java doc on all not overriding methods --> Stefano
 public class FormFragment extends Fragment {
 
     //private FormViewModel mViewModel;

@@ -6,6 +6,9 @@ import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Extended or used by classes which can be observed.
+ * */
 public class Observable<E extends Event> {
     private List<Subscriber<E>> subscribers = new ArrayList<>();
 

@@ -8,14 +8,15 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 
-import androidx.preference.PreferenceManager;
 
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.util.LocaleManager;
 
 import static android.content.pm.PackageManager.GET_META_DATA;
 
+// TODO java doc to class and all not overriding methods --> Stefano
 public class SettingsActivity extends PreferenceActivity {
 
     private static SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;

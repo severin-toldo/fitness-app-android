@@ -12,6 +12,9 @@ import com.stoldo.fitness_app_android.util.LocaleManager;
 
 import static android.content.pm.PackageManager.GET_META_DATA;
 
+/**
+ * Base activity which holds all common features our activities need.
+ * */
 public abstract class BaseActivity extends AppCompatActivity {
 
     @Override
@@ -25,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.attachBaseContext(LocaleManager.setLocale(base));
     }
 
+    // TODO java doc --> Stefano
     protected void resetTitles() {
         try {
             ActivityInfo info = getPackageManager().getActivityInfo(getComponentName(), GET_META_DATA);
