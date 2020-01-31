@@ -28,7 +28,9 @@ import java.util.List;
 
 
 public class ExerciseStartActivity extends BaseActivity implements Subscriber<TimerEvent> {
-    // Views
+    /**
+     * UI Views
+     * */
     private ImageButton pauseExerciseButton;
     private ImageButton playExerciseButton;
     private ImageButton previousExerciseButton;
@@ -37,6 +39,10 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
     private TextView nextExerciseTextView;
     private TextView titleTextView;
     private ConstraintLayout background;
+    private TextView descriptionTextView;
+    private TextView noteTextView;
+    private TextView positionTextView;
+    private TextView levelTextView;
 
     private List<ExerciseEntity> exercisesOfWorkout;
     private ExerciseEntity currentExercise;
@@ -51,10 +57,6 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
     private WorkoutService workoutService = (WorkoutService) OtherUtil.getSingletonInstance(WorkoutService.class);
     private TimerService timerService = (TimerService) OtherUtil.getSingletonInstance(TimerService.class);
     private SoundService soundService = (SoundService) OtherUtil.getSingletonInstance(SoundService.class);
-    private TextView descriptionTextView;
-    private TextView noteTextView;
-    private TextView positionTextView;
-    private TextView levelTextView;
 
 
     @Override
@@ -92,6 +94,8 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
 
     /**
      * is called when seconds change.
+     *
+     * @param event The Event the seconds change triggers. If the type changes, the exercises changes.
      * */
     @Override
     public void update(TimerEvent event) {
@@ -105,8 +109,10 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
     }
 
     /**
-     * gets called every time the seconds of the timer changes.
+     * gets called every time the seconds of the timer changes and the exercise doesnt change.
      * based on the time type of the event, it changes background color, emits a sound and updates the seconds in the ui
+     *
+     * @param event
      * */
     private void onSecondsChange(TimerEvent event) {
         if (event.getTimeType() != currentTimeType) {
@@ -120,6 +126,9 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
         changeBackgroundColorByTimeType(event.getTimeType());
     }
 
+    /**
+     * Sets up all the views (click handler, virility etc)
+     * */
     private void setUpViews() {
         pauseExerciseButton = findViewById(R.id.pauseExerciseButton);
         pauseExerciseButton.setVisibility(View.GONE); // hide on start
@@ -201,6 +210,12 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
         }
     }
 
+    /**
+     * Replaces the value with - if it is null or empty
+     *
+     * @param value Value to be checked
+     * @return value or -
+     * */
     private String hyphenIfNullorEmpty(String value){
         if(value == null || value.isEmpty()){
             return "-";
@@ -209,6 +224,9 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
         return value;
     }
 
+    /**
+     * Starts the timer for the current exercise by starting the timer service.
+     * */
     private void startExerciseCountdown() {
         TimerEvent prepareEvent = new TimerEvent(currentExercise.getPrepareSeconds(), TimeType.PREPARE, Arrays.asList(this));
         TimerEvent workEvent = new TimerEvent(currentExercise.getSeconds(), TimeType.WORK, Arrays.asList(this));
@@ -216,6 +234,12 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
         timerService.startService(Arrays.asList(prepareEvent, workEvent, restEvent));
     }
 
+    /**
+     * Gets an exercise by the index if the index is valid, otherwise returns the current exercise.
+     *
+     * @param index index of the desired exercise
+     * @return The exercises at the given index or the current exercise if the index is invalid
+     * */
     private ExerciseEntity getExerciseByIndex(Integer index) {
         if (OtherUtil.isValidIndex(index, exercisesOfWorkout.size())) {
             return exercisesOfWorkout.get(index);
@@ -224,6 +248,12 @@ public class ExerciseStartActivity extends BaseActivity implements Subscriber<Ti
         return exercisesOfWorkout.get(currentExerciseIndex);
     }
 
+    /**
+     * Each time type has a different background color.
+     * This method changes the background and the status bar according to it.
+     *
+     * @param timeType given time type on which to change the color
+     * */
     private void changeBackgroundColorByTimeType(TimeType timeType) {
         OtherUtil.changeStatusbarColor(this, timeType.getBackgroundColor());
         background.setBackgroundColor(ContextCompat.getColor(this, timeType.getBackgroundColor()));

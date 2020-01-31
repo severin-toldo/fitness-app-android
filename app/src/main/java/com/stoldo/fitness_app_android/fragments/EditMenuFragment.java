@@ -21,7 +21,9 @@ public class EditMenuFragment extends Fragment {
     private Observable observable = new Observable<ActionEvent>();
     private boolean hasAddButton;
 
-    // layout components
+    /**
+     * UI Views
+     * */
     private ImageButton editButton;
     private ImageButton confirmButton;
     private ImageButton addButton;
@@ -49,6 +51,9 @@ public class EditMenuFragment extends Fragment {
         setUpComponentsFromLayout(getView());
     }
 
+    /**
+     * initializes the ui views and sets their click handlers and visibility
+     * */
     private void setUpComponentsFromLayout(View view) {
         editButton = view.findViewById(R.id.edit_button);
         editButton.setOnClickListener((View v) ->  {
@@ -76,10 +81,21 @@ public class EditMenuFragment extends Fragment {
         setDefaultVisibility();
     }
 
+    /**
+     * Sets the default visibility to the buttons
+     * */
     private void setDefaultVisibility() {
         setVisibility(View.VISIBLE, View.GONE, View.GONE, View.GONE);
     }
 
+    /**
+     * Sets visibility based on the passed paramaters.
+     *
+     * @param edit edit button visibility
+     * @param confirm confirm button visibility
+     * @param add add button visibility
+     * @cancel cancel edit button visibility
+     * */
     private void setVisibility(int edit, int confirm, int add, int cancel) {
         editButton.setVisibility(edit);
         confirmButton.setVisibility(confirm);

@@ -62,7 +62,6 @@ public class OtherUtilUnitTest {
         }
     }
 
-    // TODO runGetter() and runSetter() --> Stefano
     @Test
     public void runGetterTest() throws NoSuchFieldException {
         WorkoutEntity workout = new WorkoutEntity();

@@ -11,6 +11,7 @@ import com.stoldo.fitness_app_android.model.interfaces.Entity;
 import com.stoldo.fitness_app_android.model.interfaces.ListItem;
 import com.stoldo.fitness_app_android.model.interfaces.Submitable;
 import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
+import com.stoldo.fitness_app_android.util.LogUtil;
 import com.stoldo.fitness_app_android.util.OtherUtil;
 
 import java.util.List;
@@ -18,9 +19,11 @@ import java.util.List;
 import lombok.Setter;
 
 /**
- * @param <A> Activity
- * @param <I> Entity
- * @param <S> Service
+ * Base Activity for all Activities with a list view.
+ *
+ * @param <A> Extending Activity
+ * @param <I> Item Entity
+ * @param <S> Item (Entity) Service
  */
 public abstract class BaseListViewActivity<A extends Subscriber<ActionEvent>, I extends ListItem & Entity, S extends AbstractSyncService> extends BaseActivity implements Subscriber<ActionEvent>, Submitable {
 
@@ -60,20 +63,36 @@ public abstract class BaseListViewActivity<A extends Subscriber<ActionEvent>, I 
         }
     }
 
-    protected void initializeBaseAttributes(Class<I> entityClass, Class<S> serviceType, int itemLayoutId, int containerLayoutId){
+    public void editOnListItemClick(I clickedEntity){
+        setUpEditForm(clickedEntity);
+    }
+
+    protected void initializeBaseAttributes(Class<I> entityClass, Class<S> serviceClass, int itemLayoutId, int containerLayoutId){
         this.entityClass = entityClass;
-        this.setServiceType(serviceType);
+        this.setService(serviceClass);
         this.itemLayoutId = itemLayoutId;
         this.containerLayoutId = containerLayoutId;
     }
 
-    protected void setServiceType(Class<S> serviceType){
-        if(serviceType != null){
-            service = (S) OtherUtil.getSingletonInstance(serviceType);
+    /**
+     * Sets the service based on the passed class
+     *
+     * @param serviceClass class of service to get
+     * */
+    protected void setService(Class<S> serviceClass){
+        if(serviceClass != null){
+            service = (S) OtherUtil.getSingletonInstance(serviceClass);
         }
     }
 
-    protected void setUpEditForm(I entity ) {
+    /**
+     * Sets up the edit form which opens when an item is clicked in edit mode
+     * for a given entity
+     *
+     * @param entity entity to set up form for
+     *
+     * */
+    protected void setUpEditForm(I entity) {
         FormFragment formFragment = FormFragment.newInstance(entity);
         formFragment.setSubmitable(this::onSubmit);
         getSupportFragmentManager().beginTransaction()
@@ -81,13 +100,14 @@ public abstract class BaseListViewActivity<A extends Subscriber<ActionEvent>, I 
                 .commitNow();
     }
 
-    protected void setUpEditForm(){
+    /**
+     * Sets up an empty edit form which opens when an item is clicked in edit mode
+     * */
+    protected void setUpEditForm() {
         try {
             setUpEditForm(entityClass.newInstance());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LogUtil.logError(e.getMessage(), getClass(), e);
         }
     }
 
@@ -107,11 +127,15 @@ public abstract class BaseListViewActivity<A extends Subscriber<ActionEvent>, I 
         }
     }
 
+    /**
+     * Saves all the items (= Entities) in the list
+     * */
     protected abstract void saveEntities();
 
+    /**
+     * Gets called every time you click on a item in a list when not being in edit mode.
+     *
+     * @param clickedEntity clicked item (= Entity)
+     * */
     public abstract void defaultOnListItemClick(I clickedEntity);
-
-    public void editOnListItemClick(I clickedEntity){
-        setUpEditForm(clickedEntity);
-    }
 }
