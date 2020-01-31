@@ -48,9 +48,8 @@ import lombok.Setter;
  */
 public class FormFragment extends Fragment {
 
-    //private FormViewModel mViewModel;
     private Object fieldInformations;
-    private Map<String, Tuple<TextView, View>> labelWithView = new HashMap<>();
+    private Map<String, Tuple<TextView, View>> labelWithView = new HashMap<>();  //fieldName, Tuple<label, EditView>
 
     @Setter
     private Submitable submitable = null;

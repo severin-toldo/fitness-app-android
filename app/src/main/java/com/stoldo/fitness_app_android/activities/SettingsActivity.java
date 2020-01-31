@@ -35,6 +35,7 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
+    //Für Sprache anwenden bei ännderungen
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(LocaleManager.setLocale(base));

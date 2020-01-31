@@ -25,12 +25,12 @@ import lombok.Setter;
 public abstract class BaseListViewActivity<A extends Subscriber<ActionEvent>, I extends ListItem & Entity, S extends AbstractSyncService> extends BaseActivity implements Subscriber<ActionEvent>, Submitable {
 
     @Setter
-    private Class<I> entityClass;
-
-    @Setter
     private int itemLayoutId;
     @Setter
     private int containerLayoutId;
+
+    @Setter
+    private Class<I> entityClass;
 
     protected ListViewFragment listViewFragment;
     protected S service;

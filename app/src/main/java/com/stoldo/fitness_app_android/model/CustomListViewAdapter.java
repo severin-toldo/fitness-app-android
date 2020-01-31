@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.stoldo.fitness_app_android.R;
 import com.stoldo.fitness_app_android.model.data.events.ActionEvent;
 import com.stoldo.fitness_app_android.model.enums.ActionType;
@@ -20,7 +19,7 @@ import com.stoldo.fitness_app_android.model.interfaces.Subscriber;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomListViewAdapter<T extends ListItem> extends ArrayAdapter<T> implements View.OnClickListener {
+public class CustomListViewAdapter<T extends ListItem> extends ArrayAdapter<T> {
     private List<T> data = new ArrayList<>();
     private @LayoutRes int itemLayout;
     private Observable<ActionEvent> observable = new Observable<>();
@@ -37,22 +36,8 @@ public class CustomListViewAdapter<T extends ListItem> extends ArrayAdapter<T> i
     }
 
     @Override
-    public void onClick(View v) {
-        int position = (Integer) v.getTag();
-        T dataModel = getItem(position);
-
-        if (v.getId() == R.id.extra) {
-            // TODO do this right
-            Snackbar.make(v, "in adapter: " + dataModel.getExtra(), Snackbar.LENGTH_LONG)
-                    .setAction("No action", null).show();
-        }
-    }
-
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        T dataModel = getItem(position);
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        convertView = inflater.inflate(itemLayout, parent, false);
+        convertView = LayoutInflater.from(getContext()).inflate(itemLayout, parent, false);
 
         TextView removeButton = convertView.findViewById(R.id.removeButton);
         removeButton.setVisibility(editMode ? View.VISIBLE : View.GONE);
@@ -61,6 +46,7 @@ public class CustomListViewAdapter<T extends ListItem> extends ArrayAdapter<T> i
             observable.notifySubscribers(new ActionEvent(true, ActionType.REMOVE, position));
         });
 
+        T dataModel = getItem(position);
         if (dataModel.getTitle() != null) {
             TextView titleTextView = convertView.findViewById(R.id.title);
             titleTextView.setText(dataModel.getTitle());
